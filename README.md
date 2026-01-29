@@ -1,4 +1,4 @@
-# SplitUp 💸🤝
+# SplitUp
 
 <div align="center">
   <img src="assets/logo/splitup-logo-gradient.png" width="420" alt="SplitUp Logo">
@@ -12,7 +12,7 @@
 
 ---
 
-## 📌 Descripción general del proyecto
+## Descripción general del proyecto
 
 **SplitUp** es una aplicación diseñada para facilitar la gestión y el reparto de gastos compartidos entre grupos de personas.
 
@@ -23,7 +23,7 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-## 🎯 Objetivos del proyecto
+## Objetivos del proyecto
 
 - Aplicar **Programación Orientada a Objetos** de forma coherente.
 - Diseñar una **arquitectura reutilizable en Java**.
@@ -35,7 +35,7 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-## 🧠 Arquitectura general
+## Arquitectura general
 
 El proyecto se divide en tres bloques principales:
 
@@ -54,7 +54,7 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## 🗂️ Estructura del repositorio
+## Estructura del repositorio
 
 ```txt
 SplitUp/
