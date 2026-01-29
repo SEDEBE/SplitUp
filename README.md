@@ -111,10 +111,8 @@ El proyecto se divide en tres bloques principales:
 SplitUp/
 ├── README.md
 ├── ROADMAP_SplitUp.md
-├── .git/
-├── .github/
 │
-├── docs/
+├── docs/                     # Documentación del TFG
 │   ├── 00-vision.md
 │   ├── 01-requisitos.md
 │   ├── 02-casos-de-uso.md
@@ -127,20 +125,26 @@ SplitUp/
 │       ├── casos_uso.png
 │       └── secuencia_login.png
 │
-├── core/
+├── core/                     # Núcleo de la aplicación (Java + Maven)
+│   ├── pom.xml               # Configuración Maven y dependencias
 │   └── src/
-│       └── splitup/
-│           ├── model/
-│           ├── service/
-│           └── utils/
+│       ├── main/
+│       │   ├── java/
+│       │   │   └── com/splitup/
+│       │   │       ├── model/        # Entidades del dominio
+│       │   │       ├── service/      # Lógica de negocio
+│       │   │       └── utils/        # Utilidades y soporte
+│       │   └── resources/
+│       │       └── META-INF/
+│       │           └── persistence.xml   # Configuración JPA/Hibernate
+│       └── test/
+│           └── java/
 │
-├── app-desktop/
-│   └── src/
+├── app-desktop/              # Aplicación de escritorio (futuro)
 │
-├── app-android/
-│   └── SplitUpApp/
+├── app-android/              # Aplicación Android (futuro)
 │
-├── db/
+├── db/                       # Scripts de base de datos
 │   ├── schema.sql
 │   ├── seeds.sql
 │   └── pruebasDb.sql
@@ -150,4 +154,5 @@ SplitUp/
         ├── splitup-logo-gradient.png
         ├── splitup-logo-dark.png
         └── splitup-icon.png
+
 ```
