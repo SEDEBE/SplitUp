@@ -109,10 +109,16 @@ El proyecto se divide en tres bloques principales:
 SplitUp/
 ├── README.md
 ├── ROADMAP_SplitUp.md
+├── .git/
+├── .github/
+│
 ├── docs/
-│   ├── analisis.md
-│   ├── casos_de_uso.md
-│   ├── decisiones_tecnicas.md
+│   ├── 00-vision.md
+│   ├── 01-requisitos.md
+│   ├── 02-casos-de-uso.md
+│   ├── 03-modelo-datos-er.md
+│   ├── 04-diagrama-clases.md
+│   ├── 05-decisiones-tecnicas.md
 │   └── diagramas/
 │       ├── ERD.png
 │       ├── UML_clases.png
@@ -127,11 +133,18 @@ SplitUp/
 │           └── utils/
 │
 ├── app-desktop/
+│   └── src/
+│
 ├── app-android/
+│   └── SplitUpApp/
+│
+├── db/
+│   ├── schema.sql
+│   ├── seeds.sql
+│   └── pruebasDb.sql
 │
 └── assets/
     └── logo/
         ├── splitup-logo-gradient.png
         ├── splitup-logo-dark.png
         └── splitup-icon.png
-```
