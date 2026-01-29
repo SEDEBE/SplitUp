@@ -87,7 +87,7 @@ SplitUp/
 <div align="center">
 
 <a href="docs/diagramas/ERD.png">
-  <img src="docs/diagramas/ERD.png" style="max-width: 800px; width: 100%;">
+  <img src="docs/diagramas/ERD.png" style="max-width: 600px; width: 100%;">
 </a>
 
 **ERD - Modelo Entidad/Relación**
@@ -95,7 +95,7 @@ SplitUp/
 <br><br>
 
 <a href="docs/diagramas/UML_clases.png">
-  <img src="docs/diagramas/UML_clases.png" style="max-width: 800px; width: 100%;">
+  <img src="docs/diagramas/UML_clases.png" style="max-width: 600px; width: 100%;">
 </a>
 
 **UML - Diagrama de clases (Core)**
