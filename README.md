@@ -20,10 +20,6 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-<div align="center">
-  <img src="assets/logo/splitup-logo-gradient.png" width="420">
-</div>
-
 # Objetivos del proyecto
 
 - Aplicar **Programación Orientada a Objetos** de forma coherente.
