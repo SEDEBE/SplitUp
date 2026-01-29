@@ -1,30 +1,33 @@
-# SplitUp
+# SplitUp 💸🤝
 
 <div align="center">
-
-<img src="assets/splitup-logo-beta.png" style="max-width: 420px; width: 100%;">
+  <img src="assets/logo/splitup-logo-gradient.png" width="420" alt="SplitUp Logo">
+  
+  <br>
 
 **Aplicación de reparto de gastos en grupo**  
-Inspirada en Tricount · Desarrollada en Java
+ Inspirada en Tricount · Desarrollada en Java
 
 </div>
 
 ---
 
-# Descripción general del proyecto
+## 📌 Descripción general del proyecto
 
-**SplitUp** es una aplicación diseñada para facilitar la gestión y el reparto de gastos compartidos entre varias personas.  
-El proyecto nace como **Trabajo de Fin de Grado (TFG)** del ciclo de **Desarrollo de Aplicaciones Multiplataforma (DAM)** y tiene como objetivo aplicar de forma realista los conocimientos adquiridos durante el ciclo.
+**SplitUp** es una aplicación diseñada para facilitar la gestión y el reparto de gastos compartidos entre grupos de personas.
 
-La aplicación permite crear grupos, registrar gastos, asignar participantes y calcular automáticamente los balances finales, indicando quién debe dinero y a quién.
+El proyecto se desarrolla como **Trabajo de Fin de Grado (TFG)** del ciclo de  
+**Desarrollo de Aplicaciones Multiplataforma (DAM)** en el **IES Lope de Vega**.
+
+La aplicación permite crear grupos, registrar gastos, asignar participantes y calcular automáticamente los balances finales, indicando de forma clara quién debe dinero y a quién.
 
 ---
 
-# Objetivos del proyecto
+## 🎯 Objetivos del proyecto
 
 - Aplicar **Programación Orientada a Objetos** de forma coherente.
 - Diseñar una **arquitectura reutilizable en Java**.
-- Separar correctamente **lógica de negocio e interfaces**.
+- Separar correctamente la **lógica de negocio** de las interfaces.
 - Desarrollar una aplicación **multiplataforma**:
   - Aplicación principal en Java
   - Aplicación móvil Android (Java)
@@ -32,33 +35,26 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-# Arquitectura general del sistema
+## 🧠 Arquitectura general
 
-El proyecto se estructura en **tres grandes bloques**:
+El proyecto se divide en tres bloques principales:
 
-1. **Core (Java)**  
-   Contiene toda la lógica de negocio común:
-   - Grupos
-   - Participantes
-   - Gastos
-   - Cálculo de balances
-   - Reglas de reparto
+- **Core (Java)**  
+  Contiene toda la lógica de negocio:
+  - Grupos
+  - Participantes
+  - Gastos
+  - Cálculo de balances
 
-2. **Aplicación principal (Java Desktop)**  
-   Interfaz de usuario para gestionar los grupos y gastos desde escritorio.
+- **Aplicación Desktop (Java)**  
+  Interfaz de usuario para escritorio.
 
-3. **Aplicación móvil Android (Java)**  
-   Versión móvil desarrollada en Android Studio que reutiliza la lógica del core.
-
-Esta separación permite:
-
-- Reutilización de código
-- Mantenimiento sencillo
-- Escalabilidad futura
+- **Aplicación Android (Java)**  
+  Versión móvil desarrollada en Android Studio reutilizando el core.
 
 ---
 
-# Estructura del repositorio
+## 🗂️ Estructura del repositorio
 
 ```txt
 SplitUp/
@@ -77,11 +73,11 @@ SplitUp/
 │           └── utils/
 │
 ├── app-desktop/
-│   └── src/
-│
 ├── app-android/
-│   └── SplitUpApp/
 │
 └── assets/
-    └── splitup-logo-beta.png
+    └── logo/
+        ├── splitup-logo-gradient.png
+        ├── splitup-logo-dark.png
+        └── splitup-icon.png
 ```
