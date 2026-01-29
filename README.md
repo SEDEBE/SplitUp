@@ -1,58 +1,87 @@
 # SplitUp 💸🤝
 
-Aplicación para la gestión y reparto de gastos en grupo, inspirada en Tricount, desarrollada en Java.
+<div align="center">
 
-> Trabajo de Fin de Grado - 2º DAM  
-> IES Lope de Vega  
-> Autor: Alejandro Córdoba Pérez
+<img src="assets/splitup-logo-beta.png" style="max-width: 420px; width: 100%;">
 
----
+**Aplicación de reparto de gastos en grupo**  
+Inspirada en Tricount · Desarrollada en Java
 
-## 🎯 Objetivo del proyecto
-
-Desarrollar una aplicación multiplataforma que permita gestionar gastos compartidos, calculando automáticamente balances y deudas entre los participantes de un grupo.
-
-El proyecto se basa en una arquitectura común en Java que permite reutilizar la lógica de negocio tanto en la aplicación principal como en la aplicación móvil Android.
+</div>
 
 ---
 
-## 🧠 Arquitectura del proyecto
+# Descripción general del proyecto
 
-- **Core (Java):** lógica de negocio común
-- **Aplicación Desktop:** interfaz de usuario para escritorio
-- **Aplicación Android:** versión móvil desarrollada en Android Studio
+**SplitUp** es una aplicación diseñada para facilitar la gestión y el reparto de gastos compartidos entre varias personas.  
+El proyecto nace como **Trabajo de Fin de Grado (TFG)** del ciclo de **Desarrollo de Aplicaciones Multiplataforma (DAM)** y tiene como objetivo aplicar de forma realista los conocimientos adquiridos durante el ciclo.
 
----
-
-## 🛠️ Tecnologías
-
-- Lenguaje principal: **Java**
-- Control de versiones: **GitHub + GitHub Desktop**
-- IDEs: IntelliJ IDEA / Android Studio
-- App móvil: Android (Java)
-- Patrón de diseño: MVC / capas
-- Base de datos: _(por definir)_
+La aplicación permite crear grupos, registrar gastos, asignar participantes y calcular automáticamente los balances finales, indicando quién debe dinero y a quién.
 
 ---
 
-## 📌 Funcionalidades previstas
+# Objetivos del proyecto
 
-- Gestión de grupos
-- Gestión de participantes
-- Registro de gastos
-- Reparto equitativo o personalizado
-- Cálculo automático de balances
-- Resumen de deudas
-- Historial de gastos
-
----
-
-## 📅 Estado del proyecto
-
-🟡 En fase inicial de diseño y planificación.
+- Aplicar **Programación Orientada a Objetos** de forma coherente.
+- Diseñar una **arquitectura reutilizable en Java**.
+- Separar correctamente **lógica de negocio e interfaces**.
+- Desarrollar una aplicación **multiplataforma**:
+  - Aplicación principal en Java
+  - Aplicación móvil Android (Java)
+- Documentar todo el proceso técnico y las decisiones de diseño.
 
 ---
 
-## 📝 Diario de desarrollo
+# Arquitectura general del sistema
 
-- 2026-01-29: Definición del nombre del proyecto y estructura inicial del repositorio.
+El proyecto se estructura en **tres grandes bloques**:
+
+1. **Core (Java)**  
+   Contiene toda la lógica de negocio común:
+   - Grupos
+   - Participantes
+   - Gastos
+   - Cálculo de balances
+   - Reglas de reparto
+
+2. **Aplicación principal (Java Desktop)**  
+   Interfaz de usuario para gestionar los grupos y gastos desde escritorio.
+
+3. **Aplicación móvil Android (Java)**  
+   Versión móvil desarrollada en Android Studio que reutiliza la lógica del core.
+
+Esta separación permite:
+
+- Reutilización de código
+- Mantenimiento sencillo
+- Escalabilidad futura
+
+---
+
+# Estructura del repositorio
+
+```txt
+SplitUp/
+├── README.md
+├── docs/
+│   ├── analisis.md
+│   ├── casos_de_uso.md
+│   ├── decisiones_tecnicas.md
+│   └── diagramas/
+│
+├── core/
+│   └── src/
+│       └── splitup/
+│           ├── model/
+│           ├── service/
+│           └── utils/
+│
+├── app-desktop/
+│   └── src/
+│
+├── app-android/
+│   └── SplitUpApp/
+│
+└── assets/
+    └── splitup-logo-beta.png
+```
