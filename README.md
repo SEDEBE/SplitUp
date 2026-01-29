@@ -54,37 +54,61 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## Estructura de los Diagramas
+## Diagramas
 
-<div align="center"> <a href="docs/diagramas/ERD.png"> <img src="docs/diagramas/ERD.png" style="max-width: 600px; width: 100%;"> </a>
+<div align="center">
 
-ERD - Modelo Entidad/Relación
+<a href="docs/diagramas/ERD.png">
+  <img src="docs/diagramas/ERD.png" style="max-width: 600px; width: 100%;">
+</a>
 
-<br><br>
-
-<a href="docs/diagramas/UML_clases.png"> <img src="docs/diagramas/UML_clases.png" style="max-width: 600px; width: 100%;"> </a>
-
-UML - Diagrama de clases (Core)
+**ERD - Modelo Entidad/Relación**
 
 <br><br>
 
-<a href="docs/diagramas/casos_uso.png"> <img src="docs/diagramas/casos_uso.png" style="max-width: 600px; width: 100%;"> </a>
+<a href="docs/diagramas/UML_clases.png">
+  <img src="docs/diagramas/UML_clases.png" style="max-width: 600px; width: 100%;">
+</a>
 
-Diagrama de casos de uso
+**UML - Diagrama de clases (Core)**
 
 <br><br>
 
-<a href="docs/diagramas/secuencia_login.png"> <img src="docs/diagramas/secuencia_login.png" style="max-width: 600px; width: 100%;"> </a>
+<a href="docs/diagramas/casos_uso.png">
+  <img src="docs/diagramas/casos_uso.png" style="max-width: 600px; width: 100%;">
+</a>
 
-Diagrama de secuencia – Inicio de sesión
+**Diagrama de casos de uso**
 
-## </div>
+<br><br>
+
+<a href="docs/diagramas/secuencia_login.png">
+  <img src="docs/diagramas/secuencia_login.png" style="max-width: 600px; width: 100%;">
+</a>
+
+**Diagrama de secuencia – Inicio de sesión**
+
+</div>
+
+---
+
+## Estado del proyecto
+
+🟢 Fase 0 – Identidad: Completada  
+🟢 Fase 1 – Análisis y diseño: Completada  
+🟢 Fase 2 – Base de datos (MySQL): Completada  
+🟡 Fase 3 – Core en Java: En progreso
+
+📌 Consulta el progreso detallado en: [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
+
+---
 
 ## Estructura del repositorio
 
 ```txt
 SplitUp/
 ├── README.md
+├── ROADMAP_SplitUp.md
 ├── docs/
 │   ├── analisis.md
 │   ├── casos_de_uso.md

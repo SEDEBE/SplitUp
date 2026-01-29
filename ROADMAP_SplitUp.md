@@ -21,6 +21,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [x] Estructura inicial del repositorio
 
 **Evidencias**
+
 - `assets/logo/splitup-logo-gradient.png`
 - `README.md`
 
@@ -31,6 +32,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 **Objetivo:** Tener el análisis y diseño completos antes de implementar.
 
 ### ✔ Completado
+
 - [x] Visión del proyecto (`docs/00-vision.md`)
 - [x] Requisitos funcionales y no funcionales (`docs/01-requisitos.md`)
 - [x] Casos de uso (documentados) (`docs/02-casos-de-uso.md`)
@@ -42,6 +44,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [x] Estética unificada para diagramas (rosa/morado, minimalista, profesional)
 
 ### 🔜 Pendiente para cerrar fase (opcional)
+
 - [ ] Revisión final y ampliación de casos de uso (alternativos / excepciones)
 - [ ] Añadir “Alcance / No alcance” en la documentación (muy útil para defensa)
 
@@ -51,14 +54,30 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 **Objetivo:** Pasar del modelo ER a un esquema MySQL implementable.
 
-- [ ] `db/schema.sql` final (tablas + constraints + índices)
-- [ ] `db/seeds.sql` (datos de prueba)
-- [ ] Decisión final: almacenamiento de tickets (archivo + ruta/URL en BD)
-- [ ] Validación del esquema (crear BD, insertar seed, comprobar integridad)
+### ✔ Completado
+
+- [x] Diseño del esquema MySQL definitivo (`schema.sql`)
+- [x] Corrección de palabra reservada (`groups` → `expense_groups`)
+- [x] Definición de claves primarias y foráneas
+- [x] Índices para optimización de consultas
+- [x] Script de datos de prueba (`seeds.sql`)
+- [x] Creación de la base de datos en entorno local
+- [x] Gestión y validación mediante MySQL Workbench
+- [x] Inserción correcta de usuarios, grupos, gastos y adjuntos
+- [x] Verificación de integridad referencial mediante consultas SQL
+
+### 📌 Incidencias relevantes
+
+- Durante el desarrollo se detectó un error al utilizar `groups` como nombre de tabla, al ser una palabra reservada en MySQL.
+- La solución aplicada fue renombrar la tabla a `expense_groups`, actualizando todas las claves foráneas y scripts asociados.
+
+> Esta incidencia se documenta como ejemplo real de problema técnico detectado y resuelto, útil para la presentación y defensa del TFG.
 
 **Evidencias (cuando esté)**
+
 - `db/schema.sql`
 - `db/seeds.sql`
+- `db/pruebasDb.sql`
 
 ---
 
@@ -73,6 +92,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [ ] Tests básicos del core (JUnit)
 
 **Evidencias (cuando esté)**
+
 - `core/src/...`
 - `core/tests/...` (o módulo tests)
 
@@ -123,7 +143,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 ---
 
 ## 📝 Registro breve (opcional)
+
 Añade una línea por hito:
 
 - 2026-01-29: README + diagramas (ERD, UML, Casos de uso, Secuencia login) + estética unificada.
-
