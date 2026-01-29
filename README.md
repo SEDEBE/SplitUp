@@ -35,6 +35,8 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
+P
+
 ## Arquitectura general
 
 El proyecto se divide en tres bloques principales:
@@ -148,3 +150,4 @@ SplitUp/
         ├── splitup-logo-gradient.png
         ├── splitup-logo-dark.png
         └── splitup-icon.png
+```
