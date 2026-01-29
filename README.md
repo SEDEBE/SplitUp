@@ -1,4 +1,4 @@
-# SplitUp 💸🤝
+# SplitUp
 
 <div align="center">
 
