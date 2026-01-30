@@ -35,24 +35,22 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-P
-
 ## Arquitectura general
 
 El proyecto se divide en tres bloques principales:
 
 - **Core (Java)**  
-  Contiene toda la lógica de negocio:
-  - Grupos
-  - Participantes
-  - Gastos
-  - Cálculo de balances
+  Contiene toda la lógica de negocio y persistencia:
+  - Entidades del dominio
+  - Servicios
+  - Acceso a base de datos (Hibernate)
+  - Algoritmos de reparto y balance
 
 - **Aplicación Desktop (Java)**  
-  Interfaz de usuario para escritorio.
+  Interfaz de usuario para escritorio (pendiente).
 
 - **Aplicación Android (Java)**  
-  Versión móvil desarrollada en Android Studio reutilizando el core.
+  Versión móvil desarrollada en Android Studio reutilizando el core (pendiente).
 
 ---
 
@@ -101,7 +99,7 @@ El proyecto se divide en tres bloques principales:
 🟢 Fase 2 – Base de datos (MySQL): Completada  
 🟡 Fase 3 – Core en Java: En progreso
 
-📌 Consulta el progreso detallado en: [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
+📌 Progreso detallado en: [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
 
 ---
 
@@ -112,7 +110,7 @@ SplitUp/
 ├── README.md
 ├── ROADMAP_SplitUp.md
 │
-├── docs/                     # Documentación del TFG
+├── docs/
 │   ├── 00-vision.md
 │   ├── 01-requisitos.md
 │   ├── 02-casos-de-uso.md
@@ -120,39 +118,42 @@ SplitUp/
 │   ├── 04-diagrama-clases.md
 │   ├── 05-decisiones-tecnicas.md
 │   └── diagramas/
-│       ├── ERD.png
-│       ├── UML_clases.png
-│       ├── casos_uso.png
-│       └── secuencia_login.png
 │
-├── core/                     # Núcleo de la aplicación (Java + Maven)
-│   ├── pom.xml               # Configuración Maven y dependencias
+├── core/
+│   ├── pom.xml
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/splitup/
+│   │   │   │   ├── app/
+│   │   │   │   │   └── TestHibernate.java
+│   │   │   │   ├── model/
+│   │   │   │   │   └── User.java
+│   │   │   │   ├── service/
+│   │   │   │   └── utils/
+│   │   │   │       └── HibernateUtil.java
+│   │   │   └── resources/
+│   │   │       ├── hibernate.properties
+│   │   │       └── logback.xml
+│   │   └── test/
+│   │       └── java/com/splitup/
+│   │           └── AppTest.java
+│   └── target/
+│       ├── classes/
+│       ├── generated-sources/
+│       ├── maven-status/
+│       └── test-classes/
+│
+├── app-desktop/
 │   └── src/
-│       ├── main/
-│       │   ├── java/
-│       │   │   └── com/splitup/
-│       │   │       ├── model/        # Entidades del dominio
-│       │   │       ├── service/      # Lógica de negocio
-│       │   │       └── utils/        # Utilidades y soporte
-│       │   └── resources/
-│       │       └── META-INF/
-│       │           └── persistence.xml   # Configuración JPA/Hibernate
-│       └── test/
-│           └── java/
 │
-├── app-desktop/              # Aplicación de escritorio (futuro)
+├── app-android/
+│   └── SplitUpApp/
 │
-├── app-android/              # Aplicación Android (futuro)
-│
-├── db/                       # Scripts de base de datos
+├── db/
 │   ├── schema.sql
 │   ├── seeds.sql
 │   └── pruebasDb.sql
 │
 └── assets/
     └── logo/
-        ├── splitup-logo-gradient.png
-        ├── splitup-logo-dark.png
-        └── splitup-icon.png
-
 ```
