@@ -1,8 +1,3 @@
----
-
-## 🗺️ `ROADMAP_SplitUp.md` (ACTUALIZADO)
-
-```md
 # SplitUp — Hoja de ruta y progreso (TFG)
 
 > Autor: Alejandro Córdoba Pérez  
