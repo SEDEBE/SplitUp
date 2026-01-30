@@ -1,24 +1,29 @@
 package com.splitup.app;
 
 import com.splitup.model.User;
-import com.splitup.utils.JpaUtil;
-import jakarta.persistence.EntityManager;
+import com.splitup.utils.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class TestHibernate {
 
     public static void main(String[] args) {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+        Transaction tx = null;
 
-        em.getTransaction().begin();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
 
-        User user = new User("Alex", "alex@splitup.dev");
-        em.persist(user);
+            User user = new User("Noelia", "noelia@splitup.dev");
+            session.persist(user);
 
-        em.getTransaction().commit();
-        em.close();
-        JpaUtil.shutdown();
-
-        System.out.println("Usuario guardado con ID: " + user.getId());
+            tx.commit();
+            System.out.println("Usuario guardado correctamente.");
+        } catch (Exception e) {
+            if (tx != null && tx.isActive())
+                tx.rollback();
+            e.printStackTrace();
+        } finally {
+            HibernateUtil.shutdown();
+        }
     }
-
 }
