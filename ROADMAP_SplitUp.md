@@ -27,7 +27,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ---
 
-## 🟡 FASE 1 · Análisis y diseño (EN CURSO — muy avanzada)
+## ✅ FASE 1 · Análisis y diseño (COMPLETADA)
 
 **Objetivo:** Tener el análisis y diseño completos antes de implementar.
 
@@ -43,14 +43,9 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [x] Directorio `docs/` estructurado
 - [x] Estética unificada para diagramas (rosa/morado, minimalista, profesional)
 
-### 🔜 Pendiente para cerrar fase (opcional)
-
-- [ ] Revisión final y ampliación de casos de uso (alternativos / excepciones)
-- [ ] Añadir “Alcance / No alcance” en la documentación (muy útil para defensa)
-
 ---
 
-## 🔴 FASE 2 · Diseño de base de datos (MySQL) (PENDIENTE)
+## ✅ FASE 2 · Diseño de base de datos (MySQL) (COMPLETADA)
 
 **Objetivo:** Pasar del modelo ER a un esquema MySQL implementable.
 
@@ -68,12 +63,12 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ### 📌 Incidencias relevantes
 
-- Durante el desarrollo se detectó un error al utilizar `groups` como nombre de tabla, al ser una palabra reservada en MySQL.
-- La solución aplicada fue renombrar la tabla a `expense_groups`, actualizando todas las claves foráneas y scripts asociados.
+- Uso de `groups` como nombre de tabla (palabra reservada en MySQL).
+- Solución: renombrado a `expense_groups` y actualización completa del esquema.
 
-> Esta incidencia se documenta como ejemplo real de problema técnico detectado y resuelto, útil para la presentación y defensa del TFG.
+> Incidencia documentada como ejemplo real para la defensa del TFG.
 
-**Evidencias (cuando esté)**
+**Evidencias**
 
 - `db/schema.sql`
 - `db/seeds.sql`
@@ -81,30 +76,41 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ---
 
-## 🔴 FASE 3 · Core en Java (lógica de negocio) (PENDIENTE)
+## 🟡 FASE 3 · Core en Java (lógica de negocio) (EN CURSO)
 
 **Objetivo:** Implementar el núcleo reutilizable de SplitUp en Java.
+
+### ✔ Completado
+
+- [x] Definición de la estructura del módulo `core`
+- [x] Configuración del proyecto Java con **Maven**
+- [x] Creación y validación del `pom.xml`
+- [x] Gestión de dependencias (Hibernate, JPA, MySQL, Logback)
+- [x] Compilación y ejecución correcta (`mvn clean test`)
+- [x] Separación clara entre core, apps cliente y documentación
+
+### 🔜 Pendiente
 
 - [ ] Entidades de dominio (User, Group, Expense, Share, Attachment, Category)
 - [ ] Servicios de negocio (crear gasto, repartir, balances)
 - [ ] Algoritmo de balances (quién debe a quién)
-- [ ] Validaciones (importes, miembros, permisos)
-- [ ] Tests básicos del core (JUnit)
+- [ ] Validaciones de dominio
+- [ ] Tests unitarios del core (JUnit)
 
-**Evidencias (cuando esté)**
+**Evidencias**
 
-- `core/src/...`
-- `core/tests/...` (o módulo tests)
+- `core/pom.xml`
+- `core/src/main/java/...`
 
 ---
 
 ## 🔴 FASE 4 · Persistencia y conexión a BD (PENDIENTE)
 
-**Objetivo:** Conectar el core con MySQL.
+**Objetivo:** Conectar el core con MySQL mediante Hibernate.
 
-- [ ] Conector (JDBC / framework a definir)
-- [ ] Repositorios (CRUD de grupos, gastos, miembros, adjuntos)
-- [ ] Migraciones/Versionado de BD (opcional pero pro)
+- [ ] Configuración JPA (`persistence.xml`)
+- [ ] Utilidad de conexión (EntityManager / Session)
+- [ ] Repositorios (CRUD)
 - [ ] Tests de integración (opcional)
 
 ---
@@ -113,37 +119,35 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 **Objetivo:** UI de escritorio conectada al core.
 
-- [ ] Tecnología UI (JavaFX / Swing) — decisión documentada
-- [ ] Flujos principales: login, grupos, gastos, balance
+- [ ] Tecnología UI (JavaFX / Swing)
+- [ ] Flujos principales
 - [ ] Integración core + persistencia
-- [ ] Capturas para memoria del TFG
+- [ ] Capturas para memoria
 
 ---
 
 ## 🔴 FASE 6 · Aplicación Android (PENDIENTE)
 
-**Objetivo:** Versión móvil en Android Studio (Java), reutilizando el core.
+**Objetivo:** Versión móvil reutilizando el core.
 
-- [ ] Login social (Google / Facebook) integrado
-- [ ] UI móvil (grupos, gastos, balance)
-- [ ] Cámara / ticket (MVP: adjuntar imagen; Extra: OCR)
-- [ ] Persistencia + sincronización (según enfoque)
+- [ ] Login
+- [ ] UI móvil
+- [ ] Cámara / tickets (extra OCR)
+- [ ] Sincronización
 
 ---
 
 ## 🔴 FASE 7 · Pulido final y defensa (PENDIENTE)
 
-**Objetivo:** Preparar entrega final, memoria y demo.
+**Objetivo:** Preparar entrega final.
 
 - [ ] Pruebas finales
-- [ ] Documentación final (memoria)
+- [ ] Memoria final
 - [ ] Presentación / demo
 - [ ] Checklist de entrega
 
 ---
 
-## 📝 Registro breve (opcional)
+## 📝 Registro breve
 
-Añade una línea por hito:
-
-- 2026-01-29: README + diagramas (ERD, UML, Casos de uso, Secuencia login) + estética unificada.
+- 2026-01-29: Entorno Java + Maven configurado. Core preparado como proyecto Maven funcional.
