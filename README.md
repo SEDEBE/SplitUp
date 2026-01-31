@@ -40,55 +40,17 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 El proyecto se divide en tres bloques principales:
 
 - **Core (Java)**  
-  Contiene toda la lógica de negocio y persistencia:
-  - Entidades del dominio
-  - Servicios
-  - Acceso a base de datos (Hibernate)
-  - Algoritmos de reparto y balance
+  Contiene toda la lógica de negocio:
+  - Grupos
+  - Participantes
+  - Gastos
+  - Cálculo de balances
 
 - **Aplicación Desktop (Java)**  
-  Interfaz de usuario para escritorio (pendiente).
+  Interfaz de usuario para escritorio.
 
 - **Aplicación Android (Java)**  
-  Versión móvil desarrollada en Android Studio reutilizando el core (pendiente).
-
----
-
-## Diagramas
-
-<div align="center">
-
-<a href="docs/diagramas/ERD.png">
-  <img src="docs/diagramas/ERD.png" style="max-width: 600px; width: 100%;">
-</a>
-
-**ERD - Modelo Entidad/Relación**
-
-<br><br>
-
-<a href="docs/diagramas/UML_clases.png">
-  <img src="docs/diagramas/UML_clases.png" style="max-width: 600px; width: 100%;">
-</a>
-
-**UML - Diagrama de clases (Core)**
-
-<br><br>
-
-<a href="docs/diagramas/casos_uso.png">
-  <img src="docs/diagramas/casos_uso.png" style="max-width: 600px; width: 100%;">
-</a>
-
-**Diagrama de casos de uso**
-
-<br><br>
-
-<a href="docs/diagramas/secuencia_login.png">
-  <img src="docs/diagramas/secuencia_login.png" style="max-width: 600px; width: 100%;">
-</a>
-
-**Diagrama de secuencia – Inicio de sesión**
-
-</div>
+  Versión móvil desarrollada en Android Studio reutilizando el core.
 
 ---
 
@@ -99,7 +61,38 @@ El proyecto se divide en tres bloques principales:
 🟢 Fase 2 – Base de datos (MySQL): Completada  
 🟡 Fase 3 – Core en Java: En progreso
 
-📌 Progreso detallado en: [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
+📌 Consulta el progreso detallado en: [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
+
+---
+
+## Estado técnico actual del core (NUEVO)
+
+El core del proyecto está actualmente implementado como un **proyecto Maven independiente**, con las siguientes características:
+
+- Gestión de dependencias mediante Maven
+- Persistencia implementada con **Hibernate**
+- Conexión real a base de datos **MySQL**
+- Estructura preparada para reutilización desde aplicaciones cliente
+- Logging controlado mediante **Logback**
+
+Se ha validado:
+
+- Compilación correcta
+- Ejecución correcta
+- Inserción real de datos en la base de datos
+- Control de errores y transacciones
+
+---
+
+## Tecnologías utilizadas (NUEVO)
+
+- Java (JDK 25)
+- Maven
+- Hibernate ORM
+- Jakarta Persistence (JPA)
+- MySQL
+- SLF4J + Logback
+- JUnit 5
 
 ---
 
