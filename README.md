@@ -1,5 +1,9 @@
 # SplitUp
 
+> Autor: Alejandro Córdoba Pérez  
+> Proyecto: SplitUp  
+> Última actualización: 2026-01-31
+
 <div align="center">
   <img src="assets/logo/splitup-logo-gradient.png" width="420" alt="SplitUp Logo">
   
