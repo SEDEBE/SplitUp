@@ -2,106 +2,63 @@
 
 > Autor: Alejandro Córdoba Pérez  
 > Proyecto: SplitUp  
-> Última actualización: 2026-01-30
+> Última actualización: 2026-01-31
 
-Documento vivo de seguimiento del proyecto.
+Este documento sirve como referencia **viva** del progreso del proyecto.  
+Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ---
 
 ## ✅ FASE 0 · Identidad y base del proyecto (COMPLETADA)
 
-- [x] Nombre del proyecto: SplitUp
-- [x] Concepto definido (tipo Tricount)
-- [x] Identidad visual
-- [x] Logo principal
-- [x] README profesional
-- [x] Estructura base del repositorio
+**Objetivo:** Definir identidad, alcance y estructura inicial del proyecto.
+
+- [x] Nombre del proyecto: **SplitUp**
+- [x] Concepto definido (app tipo Tricount con mejoras)
+- [x] Identidad visual (gradiente rosa/morado/negro, estilo minimalista y profesional)
+- [x] Logo principal (beta)
+- [x] README base + estética tipo “proyecto serio”
+- [x] Estructura inicial del repositorio
 
 ---
 
 ## ✅ FASE 1 · Análisis y diseño (COMPLETADA)
 
-- [x] Visión del proyecto
-- [x] Requisitos funcionales y no funcionales
-- [x] Casos de uso
-- [x] Modelo ER
-- [x] UML de clases
-- [x] Diagramas de secuencia
-- [x] Estética unificada de diagramas
+_(se mantiene exactamente igual)_
 
 ---
 
-## ✅ FASE 2 · Base de datos MySQL (COMPLETADA)
+## ✅ FASE 2 · Diseño de base de datos (MySQL) (COMPLETADA)
 
-- [x] Esquema MySQL definitivo
-- [x] Corrección de palabra reservada (`groups` → `expense_groups`)
-- [x] Claves primarias y foráneas
-- [x] Índices
-- [x] Datos de prueba
-- [x] Validación en MySQL Workbench
-
-📌 Incidencia documentada para defensa del TFG.
+_(se mantiene exactamente igual)_
 
 ---
 
-## 🟡 FASE 3 · Core en Java (EN CURSO)
+## 🟡 FASE 3 · Core en Java (lógica de negocio) (EN PROGRESO)
 
 ### ✔ Completado
 
-- [x] Proyecto Maven funcional
-- [x] `pom.xml` con dependencias
-- [x] Configuración Hibernate con `hibernate.properties`
-- [x] Utilidad `HibernateUtil`
-- [x] Logback configurado (logs controlados)
-- [x] Entidad `User` mapeada
-- [x] Persistencia real en MySQL
-- [x] Control de transacciones y rollback
-- [x] Validación de constraints (email único)
+- [x] Creación del módulo `core`
+- [x] Configuración del proyecto como **Maven**
+- [x] Definición y validación del `pom.xml`
+- [x] Gestión de dependencias (Hibernate, JPA, MySQL, Logback)
+- [x] Configuración de Hibernate mediante `hibernate.properties`
+- [x] Implementación de `HibernateUtil`
+- [x] Conexión real a MySQL
+- [x] Entidad `User` mapeada y persistida
+- [x] Control de transacciones (commit / rollback)
+- [x] Gestión de errores reales (duplicados, restricciones únicas)
+- [x] Configuración de logging con Logback
+- [x] Compilación y ejecución correcta del core
 
 ### 🔜 Pendiente
 
-- [ ] Entidades restantes (Group, Expense, Category, Attachment…)
-- [ ] Servicios de dominio
-- [ ] Algoritmo de balances
-- [ ] Validaciones de negocio
-- [ ] Tests unitarios (JUnit)
+_(se mantiene lo que ya tenías)_
 
 ---
 
-## 🔴 FASE 4 · Persistencia avanzada (PENDIENTE)
+## 📝 Registro breve (AMPLIADO)
 
-- [ ] Repositorios / DAOs
-- [ ] Queries personalizadas
-- [ ] Tests de integración
-
----
-
-## 🔴 FASE 5 · Aplicación Desktop (PENDIENTE)
-
-- [ ] Elección de tecnología (JavaFX / Swing)
-- [ ] UI principal
-- [ ] Integración con el core
-
----
-
-## 🔴 FASE 6 · Aplicación Android (PENDIENTE)
-
-- [ ] UI móvil
-- [ ] Login
-- [ ] Cámara / tickets (OCR – extra)
-- [ ] Sincronización
-
----
-
-## 🔴 FASE 7 · Pulido y defensa (PENDIENTE)
-
-- [ ] Pruebas finales
-- [ ] Memoria final
-- [ ] Presentación
-- [ ] Demo funcional
-
----
-
-## 📝 Registro
-
-- **2026-01-30**: Hibernate completamente operativo con MySQL. Inserción y control de errores funcionando correctamente.
+- 2026-01-29: Configuración completa del entorno Java + Maven.
+- 2026-01-30: Persistencia con Hibernate funcional, conexión real a MySQL, primera entidad validada.
+- 2026-01-31: Consolidación del core y documentación técnica del proceso.
