@@ -13,7 +13,7 @@ public class TestHibernate {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
 
-            User user = new User("Noelia", "noelia@splitup.dev");
+            User user = new User("Juan", "juan@splitup.dev");
             session.persist(user);
 
             tx.commit();
