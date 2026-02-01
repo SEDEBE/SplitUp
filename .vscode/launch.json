@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense para saber los atributos posibles.
+  // Mantenga el puntero para ver las descripciones de los existentes atributos.
+  // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}",
+      "cwd": "${workspaceFolder}/core"
+    },
+    {
+      "type": "java",
+      "name": "TestHibernate",
+      "request": "launch",
+      "mainClass": "com.splitup.app.TestHibernate",
+      "projectName": "splitup-core",
+      "cwd": "${workspaceFolder}/core",
+      "vmArgs": "-Dfile.encoding=UTF-8"
+    }
+  ]
+}
