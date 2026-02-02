@@ -11,6 +11,8 @@ public class HibernateUtil {
         try {
             sessionFactory = new Configuration()
                     .addAnnotatedClass(com.splitup.model.User.class)
+                    .addAnnotatedClass(com.splitup.model.ExpenseGroup.class)
+
                     .buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("❌ Error al crear SessionFactory");
