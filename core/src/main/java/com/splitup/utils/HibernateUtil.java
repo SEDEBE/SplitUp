@@ -12,6 +12,7 @@ public class HibernateUtil {
             sessionFactory = new Configuration()
                     .addAnnotatedClass(com.splitup.model.User.class)
                     .addAnnotatedClass(com.splitup.model.ExpenseGroup.class)
+                    .addAnnotatedClass(com.splitup.model.GroupMember.class)
 
                     .buildSessionFactory();
         } catch (Throwable ex) {
