@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "expense_groups")
-
 public class ExpenseGroup {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -17,8 +17,6 @@ public class ExpenseGroup {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    // FK expense_groups.created_by -> users.id
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
@@ -33,8 +31,9 @@ public class ExpenseGroup {
     public ExpenseGroup() {
     }
 
-    public ExpenseGroup(String name, User createdBy) {
+    public ExpenseGroup(String name, String description, User createdBy) {
         this.name = name;
+        this.description = description;
         this.createdBy = createdBy;
     }
 
