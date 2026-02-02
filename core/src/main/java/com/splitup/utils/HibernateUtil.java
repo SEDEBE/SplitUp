@@ -3,7 +3,6 @@ package com.splitup.utils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
