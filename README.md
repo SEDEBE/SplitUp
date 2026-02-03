@@ -1,12 +1,12 @@
-# SplitUp
+﻿# SplitUp
 
 > Autor: Alejandro Córdoba Pérez  
 > Proyecto: SplitUp  
-> Última actualización: 2026-01-31
+> Última actualización: 2026-02-03
 
 <div align="center">
   <img src="assets/logo/splitup-logo-gradient.png" width="420" alt="SplitUp Logo">
-  
+
   <br>
 
 **Aplicación de reparto de gastos en grupo**  
@@ -33,9 +33,9 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 - Diseñar una **arquitectura reutilizable en Java**.
 - Separar correctamente la **lógica de negocio** de las interfaces.
 - Desarrollar una aplicación **multiplataforma**:
-  - Aplicación Desktop en Java
-  - Aplicación móvil Android (Java)
-- Gestionar datos mediante **MySQL**
+  - Aplicación Desktop en Java (planificada)
+  - Aplicación móvil Android (planificada)
+- Gestionar datos mediante **MySQL**.
 - Documentar todo el proceso técnico y las decisiones de diseño.
 
 ---
@@ -45,18 +45,14 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 El proyecto se divide en tres bloques principales:
 
 - **Core (Java)**  
-  Núcleo de la aplicación con toda la lógica de negocio:
-  - Usuarios
-  - Grupos
-  - Gastos
-  - Repartos
-  - Balances
+  Núcleo de la aplicación con la lógica de negocio y persistencia.  
+  Implementado actualmente: usuarios, grupos y membresías; gastos y balances en progreso.
 
 - **Aplicación Desktop (Java)**  
-  Interfaz de usuario de escritorio.
+  Interfaz de usuario de escritorio (planificada).
 
 - **Aplicación Android (Java)**  
-  Aplicación móvil desarrollada en Android Studio reutilizando el core.
+  Aplicación móvil desarrollada en Android Studio reutilizando el core (planificada).
 
 ---
 
@@ -105,6 +101,7 @@ El proyecto se divide en tres bloques principales:
 - Scripts:
   - `db/schema.sql`
   - `db/seeds.sql`
+  - `db/pruebasDb.sql`
 
 📌 Incidencia real documentada:
 
@@ -119,7 +116,7 @@ El proyecto se divide en tres bloques principales:
 🟢 **Fase 0 – Identidad:** Completada  
 🟢 **Fase 1 – Análisis y diseño:** Completada  
 🟢 **Fase 2 – Base de datos (MySQL):** Completada  
-🟡 **Fase 3 – Core en Java:** En progreso
+🟡 **Fase 3 – Core en Java:** En progreso (modelo base y Hibernate operativos)
 
 📌 Hoja de ruta y seguimiento:  
 [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
@@ -135,21 +132,9 @@ El proyecto se divide en tres bloques principales:
 SplitUp/
 ├── README.md
 ├── ROADMAP_SplitUp.md
-│
-├── docs/
-│   ├── 00-vision.md
-│   ├── 01-requisitos.md
-│   ├── 02-casos-de-uso.md
-│   ├── 03-modelo-datos-er.md
-│   ├── 04-diagrama-clases.md
-│   ├── 05-decisiones-tecnicas.md
-│   ├── 06-recap-tecnico.md
-│   └── diagramas/
-│       ├── ERD.png
-│       ├── UML_clases.png
-│       ├── casos_uso.png
-│       └── secuencia_login.png
-│
+├── assets/
+│   └── logo/
+│       └── splitup-logo-gradient.png
 ├── core/
 │   ├── pom.xml
 │   └── src/
@@ -162,12 +147,21 @@ SplitUp/
 │       │       ├── hibernate.properties
 │       │       └── logback.xml
 │       └── test/
-│
-├── app-desktop/
-├── app-android/
-│
-└── assets/
-    └── logo/
-        └── splitup-logo-gradient.png
-
+├── db/
+│   ├── schema.sql
+│   ├── seeds.sql
+│   └── pruebasDb.sql
+└── docs/
+    ├── 00-vision.md
+    ├── 01-requisitos.md
+    ├── 02-casos-de-uso.md
+    ├── 03-modelo-datos-er.md
+    ├── 04-diagrama-clases.md
+    ├── 05-decisiones-tecnicas.md
+    ├── 06-recap-tecnico.md
+    └── diagramas/
+        ├── ERD.png
+        ├── UML_clases.png
+        ├── casos_uso.png
+        └── secuencia_login.png
 ```

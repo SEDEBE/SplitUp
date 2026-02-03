@@ -1,8 +1,8 @@
-# SplitUp — Hoja de ruta y progreso (TFG)
+﻿# SplitUp — Hoja de ruta y progreso (TFG)
 
 > Autor: Alejandro Córdoba Pérez  
 > Proyecto: SplitUp  
-> Última actualización: 2026-01-31
+> Última actualización: 2026-02-03
 
 Este documento sirve como referencia **viva** del progreso del proyecto.  
 Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
@@ -24,13 +24,18 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ## ✅ FASE 1 · Análisis y diseño (COMPLETADA)
 
-_(se mantiene exactamente igual)_
+- [x] Visión general y requisitos (docs 00–01)
+- [x] Casos de uso documentados (docs 02)
+- [x] Diagramas ER, UML y secuencias (docs/diagramas)
 
 ---
 
 ## ✅ FASE 2 · Diseño de base de datos (MySQL) (COMPLETADA)
 
-_(se mantiene exactamente igual)_
+- [x] Esquema relacional completo (`db/schema.sql`)
+- [x] Seeds de ejemplo (`db/seeds.sql`)
+- [x] Consultas de prueba (`db/pruebasDb.sql`)
+- [x] Incidencia resuelta: `groups` → `expense_groups`
 
 ---
 
@@ -41,24 +46,63 @@ _(se mantiene exactamente igual)_
 - [x] Creación del módulo `core`
 - [x] Configuración del proyecto como **Maven**
 - [x] Definición y validación del `pom.xml`
-- [x] Gestión de dependencias (Hibernate, JPA, MySQL, Logback)
+- [x] Gestión de dependencias (Hibernate, JPA, MySQL, Logback, JUnit)
 - [x] Configuración de Hibernate mediante `hibernate.properties`
 - [x] Implementación de `HibernateUtil`
 - [x] Conexión real a MySQL
-- [x] Entidad `User` mapeada y persistida
-- [x] Control de transacciones (commit / rollback)
-- [x] Gestión de errores reales (duplicados, restricciones únicas)
 - [x] Configuración de logging con Logback
-- [x] Compilación y ejecución correcta del core
+- [x] Entidad `User` mapeada y persistida
+- [x] Entidad `ExpenseGroup` mapeada
+- [x] Entidad `GroupMember` con clave compuesta (`GroupMemberId`)
+- [x] Enumeraciones de dominio base (GroupRole, SplitMode, ShareType, AuthProvider, AttachmentType)
+- [x] Prueba funcional con `TestHibernate`
 
 ### 🔜 Pendiente
 
-_(se mantiene lo que ya tenías)_
+- [ ] Entidades: `Expense`, `Category`, `Attachment`, `AuthIdentity`, `ExpenseShare`
+- [ ] Repositorios / DAO y consultas específicas
+- [ ] Servicios de dominio (grupos, gastos, participantes, balances)
+- [ ] Algoritmo de cálculo de balances
+- [ ] Validaciones de negocio (importes, roles, participantes)
+- [ ] Pruebas unitarias y de integración reales
 
 ---
 
-## 📝 Registro breve (AMPLIADO)
+## 🔜 FASE 4 · Persistencia avanzada
+
+- [ ] Consultas complejas
+- [ ] Optimización de índices y rendimiento
+- [ ] Pruebas de integración con MySQL
+
+---
+
+## 🔜 FASE 5 · Aplicación de escritorio
+
+- [ ] Diseño de interfaz (JavaFX o Swing)
+- [ ] Integración completa con el core
+
+---
+
+## 🔜 FASE 6 · Aplicación Android
+
+- [ ] Desarrollo de la interfaz móvil
+- [ ] Sistema de autenticación
+- [ ] OCR para tickets (funcionalidad adicional)
+
+---
+
+## 🔜 FASE 7 · Pulido y defensa del proyecto
+
+- [ ] Pruebas finales
+- [ ] Redacción de la memoria
+- [ ] Preparación de la presentación
+- [ ] Demostración funcional del sistema
+
+---
+
+## 📝 Registro breve
 
 - 2026-01-29: Configuración completa del entorno Java + Maven.
 - 2026-01-30: Persistencia con Hibernate funcional, conexión real a MySQL, primera entidad validada.
 - 2026-01-31: Consolidación del core y documentación técnica del proceso.
+- 2026-02-03: Barrido del repositorio y actualización del estado real del core.

@@ -1,8 +1,10 @@
-# SplitUp — Recapitulación técnica del proyecto
+﻿# SplitUp — Recapitulación técnica del proyecto
+
+> Última actualización: 2026-02-03
 
 ## 1. Introducción
 
-El presente documento recoge la **recapitulación técnica completa del proyecto SplitUp**, desarrollado como **Trabajo de Fin de Grado (TFG)** del ciclo de **Desarrollo de Aplicaciones Multiplataforma (DAM)**.
+El presente documento recoge la **recapitulación técnica del proyecto SplitUp**, desarrollado como **Trabajo de Fin de Grado (TFG)** del ciclo de **Desarrollo de Aplicaciones Multiplataforma (DAM)**.
 
 SplitUp es una aplicación multiplataforma orientada a la **gestión y reparto equitativo de gastos compartidos entre varios usuarios**, cuyo objetivo principal es aplicar de forma práctica y rigurosa los conocimientos adquiridos durante el ciclo formativo, haciendo especial énfasis en:
 
@@ -61,8 +63,8 @@ Se ha definido una identidad visual coherente y profesional, caracterizada por:
 
 Desde el inicio del proyecto se estableció una base documental sólida, compuesta por:
 
-- Un archivo README.md descriptivo
-- Un documento ROADMAP_SplitUp.md como hoja de ruta del desarrollo
+- Un archivo `README.md` descriptivo
+- Un documento `ROADMAP_SplitUp.md` como hoja de ruta del desarrollo
 - Documentación técnica estructurada por fases
 
 ---
@@ -108,13 +110,15 @@ Todos los diagramas fueron diseñados alineados con el dominio del problema y co
 
 La base de datos se diseñó manualmente y se validó mediante MySQL Workbench.
 
-Las principales entidades del sistema son:
+Las principales entidades del esquema son:
 
 - users
+- auth_identities
 - expense_groups
-- expenses
-- expense_participants
+- group_members
 - categories
+- expenses
+- expense_shares
 - attachments
 
 ### 6.2 Claves y relaciones
@@ -145,17 +149,18 @@ Esta incidencia se documenta como ejemplo real de detección y resolución de pr
 
 ### 7.1 Entorno de desarrollo
 
-- Lenguaje: Java 17 o superior
+- Lenguaje: Java 21 (configurado en Maven)
 - Gestión de dependencias: Maven
-- Validación del proyecto mediante `mvn clean test`
+- Persistencia: Hibernate + JPA
+- Base de datos: MySQL
 
 ### 7.2 Dependencias principales
 
-- Hibernate ORM
-- Java Persistence API (JPA)
-- MySQL Connector
-- Logback
-- JUnit (preparado para pruebas)
+- Hibernate ORM 6.6
+- Jakarta Persistence 3.1
+- MySQL Connector/J 9.0
+- SLF4J 2.0 + Logback 1.5
+- JUnit 5 (tests básicos)
 
 ### 7.3 Configuración de la persistencia
 
@@ -163,6 +168,7 @@ Esta incidencia se documenta como ejemplo real de detección y resolución de pr
 - Eliminación de `persistence.xml`
 - Implementación de la clase utilitaria `HibernateUtil`
 - Gestión manual de sesiones y transacciones
+- `hbm2ddl.auto=validate` para asegurar coherencia con el esquema
 
 ### 7.4 Sistema de logging
 
@@ -174,17 +180,22 @@ Esta incidencia se documenta como ejemplo real de detección y resolución de pr
 
 En el estado actual del proyecto se ha implementado:
 
-- La entidad `User` completamente mapeada
-- Restricción de unicidad sobre el correo electrónico
-- Persistencia real en base de datos MySQL
-- Control explícito de transacciones
-- Rollback automático en caso de error
+- Entidad `User` con email único, nombre visible y timestamps
+- Entidad `ExpenseGroup` con creador y metadatos básicos
+- Entidad `GroupMember` con clave compuesta y rol (`GroupRole`)
+- Clave embebida `GroupMemberId` (`group_id`, `user_id`)
+- Enumeraciones de dominio base: `GroupRole`, `SplitMode`, `ShareType`, `AuthProvider`, `AttachmentType`
 
-### 7.6 Estado actual del núcleo del sistema
+### 7.6 Prueba técnica y validación local
+
+- Clase `TestHibernate` para validar inserción, lectura y actualización básica
+- Control explícito de transacciones con rollback seguro
+
+### 7.7 Estado actual del núcleo del sistema
 
 - Configuración validada
-- Persistencia funcional
-- Gestión de errores comprobada en entorno real
+- Persistencia funcional para el modelo base
+- Esqueleto de dominio listo para extender entidades de gastos y reparto
 
 ---
 
@@ -192,15 +203,12 @@ En el estado actual del proyecto se ha implementado:
 
 Quedan pendientes las siguientes tareas:
 
-- Implementación de las entidades:
-  - ExpenseGroup
-  - Expense
-  - Category
-  - Attachment
-- Desarrollo de servicios de dominio
-- Implementación del algoritmo de cálculo de balances
+- Implementación de entidades restantes: `Expense`, `Category`, `Attachment`, `AuthIdentity`, `ExpenseShare`
+- Repositorios / DAOs y consultas específicas
+- Servicios de dominio (grupos, gastos, participantes, balances)
+- Algoritmo de cálculo de balances
 - Validaciones de negocio
-- Pruebas unitarias con JUnit
+- Pruebas unitarias y de integración completas
 
 ---
 
@@ -208,9 +216,9 @@ Quedan pendientes las siguientes tareas:
 
 ### FASE 4 · Persistencia avanzada
 
-- Implementación de DAOs o repositorios
-- Consultas personalizadas
-- Pruebas de integración
+- Consultas complejas
+- Optimización de índices
+- Pruebas de integración con MySQL
 
 ### FASE 5 · Aplicación de escritorio
 
