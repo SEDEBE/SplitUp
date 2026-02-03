@@ -27,7 +27,7 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-## 🎯 Objetivos del proyecto
+## Objetivos del proyecto
 
 - Aplicar **Programación Orientada a Objetos** de forma coherente.
 - Diseñar una **arquitectura reutilizable en Java**.
@@ -40,7 +40,7 @@ La aplicación permite crear grupos, registrar gastos, asignar participantes y c
 
 ---
 
-## 🧠 Arquitectura general
+## Arquitectura general
 
 El proyecto se divide en tres bloques principales:
 
@@ -60,7 +60,7 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## 📐 Diagramas del proyecto
+## Diagramas del proyecto
 
 <div align="center">
 
@@ -98,7 +98,7 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## 🛢️ Base de datos
+## Base de datos
 
 - Sistema gestor: **MySQL**
 - Gestión: **MySQL Workbench**
@@ -114,7 +114,7 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## 📊 Estado del proyecto
+## Estado del proyecto
 
 🟢 **Fase 0 – Identidad:** Completada  
 🟢 **Fase 1 – Análisis y diseño:** Completada  
@@ -129,7 +129,7 @@ El proyecto se divide en tres bloques principales:
 
 ---
 
-## 📁 Estructura del repositorio
+## Estructura del repositorio
 
 ```txt
 SplitUp/
