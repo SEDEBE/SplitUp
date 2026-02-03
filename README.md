@@ -16,7 +16,7 @@ Inspirada en Tricount · Desarrollada en Java
 
 ---
 
-## 📖 Descripción general del proyecto
+## Descripción general del proyecto
 
 **SplitUp** es una aplicación diseñada para facilitar la gestión y el reparto de gastos compartidos entre grupos de personas.
 
