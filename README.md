@@ -130,8 +130,15 @@ El proyecto se divide en tres bloques principales:
 
 ```txt
 SplitUp/
+├── .gitattributes
 ├── README.md
 ├── ROADMAP_SplitUp.md
+├── .github/
+├── .vscode/
+├── app-android/
+│   └── SplitUpApp/
+├── app-desktop/
+│   └── src/
 ├── assets/
 │   └── logo/
 │       └── splitup-logo-gradient.png
@@ -140,17 +147,33 @@ SplitUp/
 │   └── src/
 │       ├── main/
 │       │   ├── java/com/splitup/
-│       │   │   ├── app/
+│       │   │   ├── app/TestHibernate.java
 │       │   │   ├── model/
+│       │   │   │   ├── ExpenseGroup.java
+│       │   │   │   ├── GroupMember.java
+│       │   │   │   ├── User.java
+│       │   │   │   ├── enums/
+│       │   │   │   │   ├── AttachmentType.java
+│       │   │   │   │   ├── AuthProvider.java
+│       │   │   │   │   ├── GroupRole.java
+│       │   │   │   │   ├── ShareType.java
+│       │   │   │   │   └── SplitMode.java
+│       │   │   │   └── ids/
+│       │   │   │       └── GroupMemberId.java
+│       │   │   ├── service/
 │       │   │   └── utils/
+│       │   │       └── HibernateUtil.java
 │       │   └── resources/
 │       │       ├── hibernate.properties
 │       │       └── logback.xml
 │       └── test/
+│           └── java/com/splitup/
+│               └── AppTest.java
+│   └── target/
 ├── db/
+│   ├── pruebasDb.sql
 │   ├── schema.sql
-│   ├── seeds.sql
-│   └── pruebasDb.sql
+│   └── seeds.sql
 └── docs/
     ├── 00-vision.md
     ├── 01-requisitos.md
@@ -160,8 +183,8 @@ SplitUp/
     ├── 05-decisiones-tecnicas.md
     ├── 06-recap-tecnico.md
     └── diagramas/
-        ├── ERD.png
-        ├── UML_clases.png
         ├── casos_uso.png
-        └── secuencia_login.png
+        ├── ERD.png
+        ├── secuencia_login.png
+        └── UML_clases.png
 ```
