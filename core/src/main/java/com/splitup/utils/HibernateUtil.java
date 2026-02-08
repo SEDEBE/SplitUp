@@ -34,6 +34,7 @@ public class HibernateUtil {
 
         } catch (Throwable ex) {
             System.err.println("Error al crear SessionFactory");
+            ex.printStackTrace();
             throw new ExceptionInInitializerError(ex);
         }
     }

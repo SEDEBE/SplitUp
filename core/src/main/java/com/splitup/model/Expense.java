@@ -34,7 +34,7 @@ public class Expense {
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, columnDefinition = "CHAR(3)")
     private String currency = "EUR";
 
     @Column(name = "expense_date", nullable = false)

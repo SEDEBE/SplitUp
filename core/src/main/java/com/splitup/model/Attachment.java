@@ -29,7 +29,7 @@ public class Attachment {
     private String mimeType;
 
     @Column(name = "file_size", columnDefinition = "INT UNSIGNED")
-    private Long fileSize;
+    private Integer fileSize;
 
     @Column(name = "ocr_text", columnDefinition = "TEXT")
     private String ocrText;
@@ -65,7 +65,7 @@ public class Attachment {
         return mimeType;
     }
 
-    public Long getFileSize() {
+    public Integer getFileSize() {
         return fileSize;
     }
 
@@ -85,7 +85,7 @@ public class Attachment {
         this.mimeType = mimeType;
     }
 
-    public void setFileSize(Long fileSize) {
+    public void setFileSize(Integer fileSize) {
         this.fileSize = fileSize;
     }
 
