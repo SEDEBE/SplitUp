@@ -25,6 +25,11 @@ public class HibernateUtil {
                     .addAnnotatedClass(com.splitup.model.User.class)
                     .addAnnotatedClass(com.splitup.model.ExpenseGroup.class)
                     .addAnnotatedClass(com.splitup.model.GroupMember.class)
+                    .addAnnotatedClass(com.splitup.model.Category.class)
+                    .addAnnotatedClass(com.splitup.model.AuthIdentity.class)
+                    .addAnnotatedClass(com.splitup.model.Expense.class)
+                    .addAnnotatedClass(com.splitup.model.ExpenseShare.class)
+                    .addAnnotatedClass(com.splitup.model.Attachment.class)
                     .buildSessionFactory();
 
         } catch (Throwable ex) {
