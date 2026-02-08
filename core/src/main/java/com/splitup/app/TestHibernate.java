@@ -14,12 +14,15 @@ import java.time.LocalDate;
 public class TestHibernate {
 
     // Para que sea reproducible
-    private static final String EMAIL_OWNER = "alex@splitup.dev";
-    private static final String EMAIL_MEMBER_2 = "miguel@splitup.dev";
-    private static final String EMAIL_MEMBER_3 = "mj@splitup.dev";
+    private static final String EMAIL_OWNER = "mj@splitup.dev";
+    private static final String EMAIL_MEMBER_2 = "alex@splitup.dev";
+    private static final String EMAIL_MEMBER_3 = "miguel@splitup.dev";
 
     private static final String GROUP_NAME = "Viaje Lisboa (TEST)";
     private static final String CATEGORY_NAME = "Supermercado";
+
+    // Fecha fija para que el test sea 100% reproducible
+    private static final LocalDate TEST_EXPENSE_DATE = LocalDate.of(2026, 2, 8);
 
     public static void main(String[] args) {
         Transaction tx = null;
@@ -28,9 +31,9 @@ public class TestHibernate {
             tx = session.beginTransaction();
 
             // 1) Users
-            User owner = findOrCreateUser(session, "Alex", EMAIL_OWNER);
-            User m2 = findOrCreateUser(session, "Miguel", EMAIL_MEMBER_2);
-            User m3 = findOrCreateUser(session, "Mj", EMAIL_MEMBER_3);
+            User owner = findOrCreateUser(session, "Mj", EMAIL_OWNER);
+            User m2 = findOrCreateUser(session, "Alex", EMAIL_MEMBER_2);
+            User m3 = findOrCreateUser(session, "Miguel", EMAIL_MEMBER_3);
 
             // 2) Group
             ExpenseGroup group = findOrCreateGroup(session, GROUP_NAME, "Grupo de test para validar entidades", owner);
@@ -43,15 +46,17 @@ public class TestHibernate {
             // 4) Category
             Category category = findOrCreateCategory(session, CATEGORY_NAME, "cart");
 
-            // 5) Expense
-            Expense expense = new Expense(group, owner, "Mercadona (TEST)", new BigDecimal("30.00"), LocalDate.now());
-            expense.setCategory(category);
-            expense.setCurrency("EUR");
-            expense.setSplitMode(SplitMode.EQUAL);
-            expense.setNote("Compra para el piso (test)");
+            // 5) Expense (idempotente: si ya existe, se reutiliza)
+            Expense expense = findOrCreateExpense(
+                    session,
+                    group,
+                    owner,
+                    category,
+                    "Mercadona (TEST)",
+                    new BigDecimal("30.00"),
+                    TEST_EXPENSE_DATE);
 
-            session.persist(expense);
-            session.flush(); // <- asegura expense.id para shares con EmbeddedId
+            session.flush(); // asegura ID si se acaba de crear
 
             // 6) ExpenseShares (EQUAL => amount_assigned NULL)
             // Clave compuesta (expense_id, user_id): evitamos duplicados si ya existen
@@ -59,18 +64,14 @@ public class TestHibernate {
             findOrCreateShare(session, expense, m2, ShareType.EQUAL, null);
             findOrCreateShare(session, expense, m3, ShareType.EQUAL, null);
 
-            // 7) Attachment
-            Attachment att = new Attachment(expense, "storage/tickets/test/mercadona_test.jpg");
-            // Por defecto RECEIPT_IMAGE, pero lo dejamos explícito si quieres:
-            // att.setAttachmentType(AttachmentType.RECEIPT_IMAGE);
-            att.setMimeType("image/jpeg");
-            att.setFileSize(245000);
-
-            session.persist(att);
+            // 7) Attachment (opcionalmente idempotente)
+            // Si quieres que NO cree adjuntos infinitos, lo hacemos idempotente por
+            // file_path.
+            Attachment att = findOrCreateAttachment(session, expense, "storage/tickets/test/mercadona_test.jpg");
 
             tx.commit();
 
-            System.out.println(" TestHibernate OK");
+            System.out.println("✅ TestHibernate OK");
             System.out.println("   ownerId=" + owner.getId());
             System.out.println("   groupId=" + group.getId());
             System.out.println("   categoryId=" + category.getId());
@@ -79,7 +80,7 @@ public class TestHibernate {
 
         } catch (Exception e) {
             safeRollback(tx);
-            System.err.println(" TestHibernate FAIL: " + e.getMessage());
+            System.err.println("❌ TestHibernate FAIL: " + e.getMessage());
             e.printStackTrace();
         } finally {
             HibernateUtil.shutdown();
@@ -139,10 +140,11 @@ public class TestHibernate {
         if (existing == null) {
             GroupMember gm = new GroupMember(user, group, role);
             session.persist(gm);
-            System.out.println(
-                    "Miembro añadido: userId=" + user.getId() + " -> groupId=" + group.getId() + " (" + role + ")");
+            System.out.println("Miembro añadido: userId=" + user.getId()
+                    + " -> groupId=" + group.getId() + " (" + role + ")");
         } else {
-            System.out.println("Miembro ya existe: userId=" + user.getId() + " -> groupId=" + group.getId());
+            System.out.println("Miembro ya existe: userId=" + user.getId()
+                    + " -> groupId=" + group.getId());
         }
     }
 
@@ -164,7 +166,48 @@ public class TestHibernate {
         return category;
     }
 
-    private static void findOrCreateShare(Session session, Expense expense, User user, ShareType type,
+    private static Expense findOrCreateExpense(
+            Session session,
+            ExpenseGroup group,
+            User payer,
+            Category category,
+            String title,
+            BigDecimal total,
+            LocalDate date) {
+        Expense expense = session.createQuery(
+                "from Expense e " +
+                        "where e.group.id = :gid and e.payer.id = :pid " +
+                        "and e.title = :title and e.expenseDate = :date " +
+                        "order by e.id desc",
+                Expense.class)
+                .setParameter("gid", group.getId())
+                .setParameter("pid", payer.getId())
+                .setParameter("title", title)
+                .setParameter("date", date)
+                .setMaxResults(1)
+                .uniqueResult();
+
+        if (expense == null) {
+            expense = new Expense(group, payer, title, total, date);
+            expense.setCategory(category);
+            expense.setCurrency("EUR");
+            expense.setSplitMode(SplitMode.EQUAL);
+            expense.setNote("Compra para el piso (test)");
+            session.persist(expense);
+            session.flush();
+            System.out.println("Gasto creado: id=" + expense.getId());
+        } else {
+            System.out.println("Gasto reutilizado: id=" + expense.getId());
+        }
+
+        return expense;
+    }
+
+    private static void findOrCreateShare(
+            Session session,
+            Expense expense,
+            User user,
+            ShareType type,
             BigDecimal amountAssigned) {
         ExpenseShare existing = session.createQuery(
                 "from ExpenseShare s where s.expense.id = :eid and s.user.id = :uid",
@@ -176,16 +219,45 @@ public class TestHibernate {
         if (existing == null) {
             ExpenseShare share = new ExpenseShare(expense, user, type, amountAssigned);
             session.persist(share);
-            System.out.println(
-                    "Share creado: expenseId=" + expense.getId() + ", userId=" + user.getId() + ", type=" + type);
+            System.out.println("Share creado: expenseId=" + expense.getId()
+                    + ", userId=" + user.getId() + ", type=" + type);
         } else {
-            System.out.println("Share ya existe: expenseId=" + expense.getId() + ", userId=" + user.getId());
+            System.out.println("Share ya existe: expenseId=" + expense.getId()
+                    + ", userId=" + user.getId());
+        }
+    }
+
+    private static Attachment findOrCreateAttachment(Session session, Expense expense, String filePath) {
+        Attachment existing = session.createQuery(
+                "from Attachment a where a.expense.id = :eid and a.filePath = :path",
+                Attachment.class)
+                .setParameter("eid", expense.getId())
+                .setParameter("path", filePath)
+                .uniqueResult();
+
+        if (existing == null) {
+            Attachment att = new Attachment(expense, filePath);
+            att.setMimeType("image/jpeg");
+            att.setFileSize(245000); // Integer (coherente)
+            session.persist(att);
+            System.out.println("Adjunto creado: expenseId=" + expense.getId() + ", path=" + filePath);
+            return att;
+        } else {
+            System.out.println("Adjunto reutilizado: expenseId=" + expense.getId() + ", path=" + filePath);
+            return existing;
         }
     }
 
     private static void safeRollback(Transaction tx) {
-        if (tx != null && tx.isActive()) {
-            tx.rollback();
+        if (tx == null) {
+            return;
+        }
+        try {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+        } catch (Exception ex) {
+            System.err.println("Rollback fallido (conexión ya cerrada): " + ex.getMessage());
         }
     }
 }

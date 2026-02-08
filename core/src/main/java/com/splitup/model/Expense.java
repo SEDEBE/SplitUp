@@ -1,16 +1,16 @@
 package com.splitup.model;
 
-import jakarta.persistence.*;
 import com.splitup.model.enums.SplitMode;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "expenses")
-
 public class Expense {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -34,7 +34,8 @@ public class Expense {
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false, columnDefinition = "CHAR(3)")
+    // En BD: CHAR(3) NOT NULL DEFAULT 'EUR'
+    @Column(nullable = false, length = 3, columnDefinition = "CHAR(3)")
     private String currency = "EUR";
 
     @Column(name = "expense_date", nullable = false)
@@ -57,11 +58,11 @@ public class Expense {
     }
 
     public Expense(ExpenseGroup group, User payer, String title, BigDecimal totalAmount, LocalDate expenseDate) {
-        this.group = group;
-        this.payer = payer;
-        this.title = title;
-        this.totalAmount = totalAmount;
-        this.expenseDate = expenseDate;
+        setGroup(group);
+        setPayer(payer);
+        setTitle(title);
+        setTotalAmount(totalAmount);
+        setExpenseDate(expenseDate);
     }
 
     public Long getId() {
@@ -112,20 +113,58 @@ public class Expense {
         return updatedAt;
     }
 
+    public void setGroup(ExpenseGroup group) {
+        if (group == null)
+            throw new IllegalArgumentException("group no puede ser null");
+        this.group = group;
+    }
+
+    public void setPayer(User payer) {
+        if (payer == null)
+            throw new IllegalArgumentException("payer no puede ser null");
+        this.payer = payer;
+    }
+
     public void setCategory(Category category) {
-        this.category = category;
+        this.category = category; // nullable en BD, ok
+    }
+
+    public void setTitle(String title) {
+        if (title == null || title.isBlank())
+            throw new IllegalArgumentException("title no puede estar vacío");
+        if (title.length() > 140)
+            throw new IllegalArgumentException("title supera 140 caracteres");
+        this.title = title;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        if (totalAmount == null)
+            throw new IllegalArgumentException("totalAmount no puede ser null");
+        if (totalAmount.signum() <= 0)
+            throw new IllegalArgumentException("totalAmount debe ser > 0");
+        this.totalAmount = totalAmount;
     }
 
     public void setCurrency(String currency) {
-        this.currency = currency;
+        if (currency == null)
+            throw new IllegalArgumentException("currency no puede ser null");
+        String c = currency.trim().toUpperCase();
+        if (c.length() != 3)
+            throw new IllegalArgumentException("currency debe tener 3 letras (ej: EUR)");
+        this.currency = c;
+    }
+
+    public void setExpenseDate(LocalDate expenseDate) {
+        if (expenseDate == null)
+            throw new IllegalArgumentException("expenseDate no puede ser null");
+        this.expenseDate = expenseDate;
     }
 
     public void setNote(String note) {
-        this.note = note;
+        this.note = note; // TEXT nullable, ok
     }
 
     public void setSplitMode(SplitMode splitMode) {
-        this.splitMode = splitMode;
+        this.splitMode = (splitMode != null) ? splitMode : SplitMode.EQUAL;
     }
-
 }
