@@ -2,7 +2,7 @@
 
 > Autor: Alejandro Córdoba Pérez  
 > Proyecto: SplitUp  
-> Última actualización: 2026-02-03
+> Última actualización: 2026-02-08
 
 <div align="center">
   <img src="assets/logo/splitup-logo-gradient.png" width="420" alt="SplitUp Logo">
@@ -46,7 +46,7 @@ El proyecto se divide en tres bloques principales:
 
 - **Core (Java)**  
   Núcleo de la aplicación con la lógica de negocio y persistencia.  
-  Implementado actualmente: usuarios, grupos y membresías; gastos y balances en progreso.
+  Implementado actualmente: modelo completo (usuarios, auth, grupos, gastos, categorías, shares y adjuntos) y validación Hibernate; servicios y balances en progreso.
 
 - **Aplicación Desktop (Java)**  
   Interfaz de usuario de escritorio (planificada).
@@ -116,7 +116,7 @@ El proyecto se divide en tres bloques principales:
 🟢 **Fase 0 – Identidad:** Completada  
 🟢 **Fase 1 – Análisis y diseño:** Completada  
 🟢 **Fase 2 – Base de datos (MySQL):** Completada  
-🟡 **Fase 3 – Core en Java:** En progreso (modelo base y Hibernate operativos)
+🟡 **Fase 3 – Core en Java:** En progreso (modelo completo y Hibernate validado)
 
 📌 Hoja de ruta y seguimiento:  
 [`ROADMAP_SplitUp.md`](ROADMAP_SplitUp.md)
@@ -149,9 +149,14 @@ SplitUp/
 │       │   ├── java/com/splitup/
 │       │   │   ├── app/TestHibernate.java
 │       │   │   ├── model/
+│       │   │   │   ├── Attachment.java
+│       │   │   │   ├── AuthIdentity.java
+│       │   │   │   ├── Category.java
+│       │   │   │   ├── Expense.java
 │       │   │   │   ├── ExpenseGroup.java
+│       │   │   │   ├── ExpenseShare.java
 │       │   │   │   ├── GroupMember.java
-│       │   │   │   ├── User.java
+│       │   │   │   └── User.java
 │       │   │   │   ├── enums/
 │       │   │   │   │   ├── AttachmentType.java
 │       │   │   │   │   ├── AuthProvider.java
@@ -159,6 +164,7 @@ SplitUp/
 │       │   │   │   │   ├── ShareType.java
 │       │   │   │   │   └── SplitMode.java
 │       │   │   │   └── ids/
+│       │   │   │       ├── ExpenseShareId.java
 │       │   │   │       └── GroupMemberId.java
 │       │   │   ├── service/
 │       │   │   └── utils/

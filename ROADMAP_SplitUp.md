@@ -2,7 +2,7 @@
 
 > Autor: Alejandro Córdoba Pérez  
 > Proyecto: SplitUp  
-> Última actualización: 2026-02-03
+> Última actualización: 2026-02-08
 
 Este documento sirve como referencia **viva** del progreso del proyecto.  
 Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
@@ -54,12 +54,16 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [x] Entidad `User` mapeada y persistida
 - [x] Entidad `ExpenseGroup` mapeada
 - [x] Entidad `GroupMember` con clave compuesta (`GroupMemberId`)
+- [x] Entidad `Expense` mapeada
+- [x] Entidad `Category` mapeada
+- [x] Entidad `Attachment` mapeada
+- [x] Entidad `AuthIdentity` mapeada
+- [x] Entidad `ExpenseShare` con clave compuesta (`ExpenseShareId`)
 - [x] Enumeraciones de dominio base (GroupRole, SplitMode, ShareType, AuthProvider, AttachmentType)
 - [x] Prueba funcional con `TestHibernate`
 
 ### 🔜 Pendiente
 
-- [ ] Entidades: `Expense`, `Category`, `Attachment`, `AuthIdentity`, `ExpenseShare`
 - [ ] Repositorios / DAO y consultas específicas
 - [ ] Servicios de dominio (grupos, gastos, participantes, balances)
 - [ ] Algoritmo de cálculo de balances
@@ -106,3 +110,4 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - 2026-01-30: Persistencia con Hibernate funcional, conexión real a MySQL, primera entidad validada.
 - 2026-01-31: Consolidación del core y documentación técnica del proceso.
 - 2026-02-03: Barrido del repositorio y actualización del estado real del core.
+- 2026-02-08: Modelo completo del core mapeado y validación Hibernate sin errores.

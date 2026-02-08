@@ -1,6 +1,6 @@
 ﻿# SplitUp — Recapitulación técnica del proyecto
 
-> Última actualización: 2026-02-03
+> Última actualización: 2026-02-08
 
 ## 1. Introducción
 
@@ -184,18 +184,23 @@ En el estado actual del proyecto se ha implementado:
 - Entidad `ExpenseGroup` con creador y metadatos básicos
 - Entidad `GroupMember` con clave compuesta y rol (`GroupRole`)
 - Clave embebida `GroupMemberId` (`group_id`, `user_id`)
+- Entidad `AuthIdentity` para proveedores externos
+- Entidad `Category` para clasificar gastos
+- Entidad `Expense` con moneda, fecha y modo de reparto
+- Entidad `ExpenseShare` con clave compuesta `ExpenseShareId`
+- Entidad `Attachment` asociada a gastos
 - Enumeraciones de dominio base: `GroupRole`, `SplitMode`, `ShareType`, `AuthProvider`, `AttachmentType`
 
 ### 7.6 Prueba técnica y validación local
 
-- Clase `TestHibernate` para validar inserción, lectura y actualización básica
+- Clase `TestHibernate` para validar flujo completo (usuarios, grupo, miembros, categoría, gasto, shares y adjunto)
 - Control explícito de transacciones con rollback seguro
 
 ### 7.7 Estado actual del núcleo del sistema
 
 - Configuración validada
-- Persistencia funcional para el modelo base
-- Esqueleto de dominio listo para extender entidades de gastos y reparto
+- Persistencia funcional para el modelo completo
+- Validación contra el esquema MySQL mediante `hbm2ddl.auto=validate`
 
 ---
 
@@ -203,7 +208,6 @@ En el estado actual del proyecto se ha implementado:
 
 Quedan pendientes las siguientes tareas:
 
-- Implementación de entidades restantes: `Expense`, `Category`, `Attachment`, `AuthIdentity`, `ExpenseShare`
 - Repositorios / DAOs y consultas específicas
 - Servicios de dominio (grupos, gastos, participantes, balances)
 - Algoritmo de cálculo de balances
