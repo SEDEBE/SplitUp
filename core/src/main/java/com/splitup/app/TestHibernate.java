@@ -71,7 +71,7 @@ public class TestHibernate {
 
             tx.commit();
 
-            System.out.println("✅ TestHibernate OK");
+            System.out.println(" TestHibernate OK");
             System.out.println("   ownerId=" + owner.getId());
             System.out.println("   groupId=" + group.getId());
             System.out.println("   categoryId=" + category.getId());
@@ -80,7 +80,7 @@ public class TestHibernate {
 
         } catch (Exception e) {
             safeRollback(tx);
-            System.err.println("❌ TestHibernate FAIL: " + e.getMessage());
+            System.err.println(" TestHibernate FAIL: " + e.getMessage());
             e.printStackTrace();
         } finally {
             HibernateUtil.shutdown();
