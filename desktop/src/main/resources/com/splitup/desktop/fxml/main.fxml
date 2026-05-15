@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.splitup.desktop.controller.MainController">
+
+    <!-- ── Toolbar superior ─────────────────────────────────────────── -->
+    <top>
+        <HBox styleClass="toolbar" alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+            <Label text="SplitUp" styleClass="app-title-small"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="userLabel" styleClass="user-label"/>
+            <Button text="Salir" onAction="#onLogout" styleClass="btn-outline"/>
+        </HBox>
+    </top>
+
+    <!-- ── Sidebar de grupos ────────────────────────────────────────── -->
+    <left>
+        <VBox styleClass="sidebar" minWidth="220" maxWidth="220" spacing="8">
+            <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
+            <Label text="Mis grupos" styleClass="sidebar-title"/>
+            <ListView fx:id="groupsList" VBox.vgrow="ALWAYS" styleClass="groups-list"/>
+            <Button text="+ Nuevo grupo" onAction="#onNewGroup"
+                    styleClass="btn-primary" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- ── Panel central ────────────────────────────────────────────── -->
+    <center>
+        <StackPane fx:id="centerPane">
+
+            <!-- Welcome (sin grupo seleccionado) -->
+            <VBox fx:id="welcomePane" alignment="CENTER" spacing="12" styleClass="welcome-pane">
+                <Label text="👋 Bienvenido/a a SplitUp" styleClass="welcome-title"/>
+                <Label text="Selecciona un grupo de la izquierda o crea uno nuevo."
+                       styleClass="subtitle" wrapText="true"/>
+            </VBox>
+
+            <!-- Detalle de grupo -->
+            <VBox fx:id="groupDetailPane" spacing="0" visible="false" managed="false">
+                <!-- Cabecera del grupo -->
+                <HBox styleClass="group-header" alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+                    <Label fx:id="groupNameLabel" styleClass="group-title"/>
+                </HBox>
+
+                <!-- Tabs -->
+                <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+
+                    <!-- Tab Gastos -->
+                    <Tab text="Gastos">
+                        <VBox spacing="8">
+                            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                            <HBox spacing="8" alignment="CENTER_RIGHT">
+                                <Button text="+ Nuevo gasto" onAction="#onNewExpense" styleClass="btn-primary"/>
+                                <Button text="Eliminar" onAction="#onDeleteExpense" styleClass="btn-danger"/>
+                            </HBox>
+                            <TableView fx:id="expensesTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colExpDate"   text="Fecha"   prefWidth="110"/>
+                                    <TableColumn fx:id="colExpTitle"  text="Título"  prefWidth="240"/>
+                                    <TableColumn fx:id="colExpPayer"  text="Pagador" prefWidth="160"/>
+                                    <TableColumn fx:id="colExpAmount" text="Importe" prefWidth="110"/>
+                                </columns>
+                                <placeholder><Label text="Sin gastos todavía."/></placeholder>
+                            </TableView>
+                        </VBox>
+                    </Tab>
+
+                    <!-- Tab Miembros -->
+                    <Tab text="Miembros">
+                        <VBox spacing="8">
+                            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                            <HBox alignment="CENTER_RIGHT">
+                                <Button text="+ Añadir miembro" onAction="#onAddMember" styleClass="btn-primary"/>
+                            </HBox>
+                            <TableView fx:id="membersTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colMemName"  text="Nombre" prefWidth="200"/>
+                                    <TableColumn fx:id="colMemEmail" text="Email"  prefWidth="260"/>
+                                    <TableColumn fx:id="colMemRole"  text="Rol"    prefWidth="120"/>
+                                </columns>
+                                <placeholder><Label text="Sin miembros."/></placeholder>
+                            </TableView>
+                        </VBox>
+                    </Tab>
+
+                    <!-- Tab Balances -->
+                    <Tab text="Balances">
+                        <VBox spacing="8">
+                            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                            <TableView fx:id="balancesTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colBalUser"   text="Usuario"  prefWidth="200"/>
+                                    <TableColumn fx:id="colBalAmount" text="Balance"  prefWidth="140"/>
+                                    <TableColumn fx:id="colBalStatus" text="Estado"   prefWidth="140"/>
+                                </columns>
+                                <placeholder><Label text="Añade gastos para ver balances."/></placeholder>
+                            </TableView>
+                        </VBox>
+                    </Tab>
+
+                    <!-- Tab Liquidar -->
+                    <Tab text="Liquidar">
+                        <VBox spacing="8">
+                            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                            <Label text="Transferencias mínimas para saldar todas las deudas:"
+                                   styleClass="section-title"/>
+                            <ListView fx:id="settlementsList" VBox.vgrow="ALWAYS"
+                                      styleClass="settlements-list">
+                                <placeholder><Label text="No hay deudas pendientes. ¡Todo saldado!"/></placeholder>
+                            </ListView>
+                        </VBox>
+                    </Tab>
+
+                </TabPane>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

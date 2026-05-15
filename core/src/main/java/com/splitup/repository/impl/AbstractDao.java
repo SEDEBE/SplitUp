@@ -46,51 +46,56 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID> {
 
     @Override
     public void save(T entity) {
+        Session session = openSession();
         Transaction tx = null;
-        try (Session session = openSession()) {
+        try {
             tx = session.beginTransaction();
             session.persist(entity);
             tx.commit();
             log.debug("save() OK: {}", entity);
         } catch (Exception e) {
-            if (tx != null)
-                tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             log.error("Error en save(): {}", e.getMessage(), e);
             throw new RuntimeException("Error al guardar entidad", e);
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void update(T entity) {
+        Session session = openSession();
         Transaction tx = null;
-        try (Session session = openSession()) {
+        try {
             tx = session.beginTransaction();
             session.merge(entity);
             tx.commit();
             log.debug("update() OK: {}", entity);
         } catch (Exception e) {
-            if (tx != null)
-                tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             log.error("Error en update(): {}", e.getMessage(), e);
             throw new RuntimeException("Error al actualizar entidad", e);
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void delete(T entity) {
+        Session session = openSession();
         Transaction tx = null;
-        try (Session session = openSession()) {
+        try {
             tx = session.beginTransaction();
-            // merge primero por si la entidad está detached
             T managed = session.merge(entity);
             session.remove(managed);
             tx.commit();
             log.debug("delete() OK: {}", entity);
         } catch (Exception e) {
-            if (tx != null)
-                tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             log.error("Error en delete(): {}", e.getMessage(), e);
             throw new RuntimeException("Error al eliminar entidad", e);
+        } finally {
+            session.close();
         }
     }
 

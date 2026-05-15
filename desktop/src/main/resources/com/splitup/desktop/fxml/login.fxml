@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.splitup.desktop.controller.LoginController"
+            styleClass="login-root">
+
+    <center>
+        <VBox alignment="CENTER" spacing="14" maxWidth="340" styleClass="login-card">
+            <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+
+            <Label text="SplitUp" styleClass="app-title"/>
+            <Label text="Gestión de gastos compartidos" styleClass="subtitle"/>
+
+            <Label fx:id="modeLabel" text="Iniciar sesión" styleClass="section-title"/>
+
+            <!-- Email -->
+            <TextField fx:id="emailField" promptText="Email" styleClass="input-field"/>
+
+            <!-- Contraseña (siempre visible) -->
+            <PasswordField fx:id="passwordField" promptText="Contraseña" styleClass="input-field"/>
+
+            <!-- Bloque registro: solo visible al registrarse -->
+            <VBox fx:id="registerBox" spacing="10">
+                <TextField fx:id="nameField" promptText="Nombre completo" styleClass="input-field"/>
+            </VBox>
+
+            <!-- Mensaje de error -->
+            <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" maxWidth="260"/>
+
+            <Button text="Entrar" fx:id="actionButton"
+                    onAction="#onAction" styleClass="btn-primary" maxWidth="Infinity"/>
+
+            <!-- Separador Google -->
+            <HBox alignment="CENTER" spacing="8">
+                <Separator HBox.hgrow="ALWAYS"/>
+                <Label text="o continúa con" style="-fx-text-fill: #888; -fx-font-size: 11px;"/>
+                <Separator HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <Button text="Continuar con Google" fx:id="googleButton"
+                    onAction="#onGoogleLogin" styleClass="btn-google" maxWidth="Infinity"/>
+
+            <Hyperlink fx:id="toggleLink"
+                       text="¿No tienes cuenta? Regístrate"
+                       onAction="#onToggleMode" styleClass="link"/>
+        </VBox>
+    </center>
+</BorderPane>

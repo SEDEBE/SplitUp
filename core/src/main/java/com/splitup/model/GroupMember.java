@@ -59,4 +59,8 @@ public class GroupMember {
         return joinedAt;
     }
 
+    public void setRole(GroupRole role) {
+        this.role = role != null ? role : GroupRole.MEMBER;
+    }
+
 }

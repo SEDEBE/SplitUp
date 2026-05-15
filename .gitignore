@@ -1,0 +1,28 @@
+# Maven
+target/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.project
+*.classpath
+.settings/
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+android/*.keystore
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db

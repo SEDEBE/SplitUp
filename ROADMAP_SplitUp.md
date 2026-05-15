@@ -39,7 +39,7 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 
 ---
 
-## 🟡 FASE 3 · Core en Java (lógica de negocio) (EN PROGRESO)
+## ✅ FASE 3 · Core en Java (lógica de negocio) (COMPLETADA)
 
 ### ✔ Completado
 
@@ -62,17 +62,47 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - [x] Enumeraciones de dominio base (GroupRole, SplitMode, ShareType, AuthProvider, AttachmentType)
 - [x] Prueba funcional con `TestHibernate`
 
+### ✔ Completado (continuación)
+
+- [x] Capa DAO completa con HQL puro:
+      GenericDao (interfaz), AbstractDao, UserDao, ExpenseGroupDao,
+      GroupMemberDao (+ findByGroupFetchingUsers con JOIN FETCH),
+      ExpenseDao, ExpenseShareDao, CategoryDao
+- [x] Capa Service completa:
+      - `BusinessException` — excepción de dominio para reglas de negocio
+      - `UserService` — registro, búsqueda y actualización de perfil
+      - `GroupService` — creación atómica grupo+OWNER, gestión de roles e invariante del último admin
+      - `ExpenseService` — creación/edición/borrado de gastos con reparto EQUAL y CUSTOM;
+        persistencia atómica de Expense + ExpenseShare en una sola sesión Hibernate
+      - `BalanceService` — cálculo de balances netos y algoritmo voraz de minimización
+        de transferencias (O(n log n) con PriorityQueue)
+- [x] DTOs con Java records: `UserBalance`, `Settlement`
+
 ### 🔜 Pendiente
 
-- [ ] Repositorios / DAO y consultas específicas
-- [ ] Servicios de dominio (grupos, gastos, participantes, balances)
-- [ ] Algoritmo de cálculo de balances
-- [ ] Validaciones de negocio (importes, roles, participantes)
-- [ ] Pruebas unitarias y de integración reales
+- [ ] Pruebas unitarias y de integración reales (JUnit 5, Mockito para DAOs)
+- [ ] Limpieza: `.gitignore` para excluir `core/target/`
 
 ---
 
-## 🔜 FASE 4 · Persistencia avanzada
+## ✅ FASE 5 · Aplicación de escritorio (COMPLETADA)
+
+- [x] Módulo Maven `desktop/` (JavaFX 21)
+- [x] Login / Registro de usuario
+- [x] Lista de grupos con creación rápida
+- [x] Detalle de grupo: tabs Gastos, Miembros, Balances, Liquidaciones
+- [x] Formulario de gasto con reparto EQUAL y CUSTOM
+- [x] CSS con identidad visual SplitUp (púrpura/rosa)
+
+## ✅ FASE 6 · Servidor REST + App Android (COMPLETADA)
+
+- [x] Módulo Maven `server/` (Spring Boot 3.3)
+- [x] API REST: usuarios, grupos, gastos, balances, liquidaciones
+- [x] Proyecto Android `android/` (Kotlin, Retrofit, Material Design 3)
+- [x] Pantallas: Login, Lista de grupos, Detalle de grupo (tabs), Crear gasto
+- [x] Misma paleta de color que el desktop
+
+## 🔜 FASE 4 · Persistencia avanzada (reclasificada como completada en Fase 3)
 
 - [ ] Consultas complejas
 - [ ] Optimización de índices y rendimiento
@@ -111,3 +141,5 @@ Cuando avances una tarea, marca su checkbox y (opcional) añade una nota breve.
 - 2026-01-31: Consolidación del core y documentación técnica del proceso.
 - 2026-02-03: Barrido del repositorio y actualización del estado real del core.
 - 2026-02-08: Modelo completo del core mapeado y validación Hibernate sin errores.
+- 2026-05-15: Capa DAO completa + capa Service completa (UserService, GroupService, ExpenseService,
+              BalanceService con algoritmo de minimización de transferencias). Compilación limpia.

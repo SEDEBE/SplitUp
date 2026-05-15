@@ -29,7 +29,7 @@ CREATE TABLE auth_identities (
   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   user_id BIGINT UNSIGNED NOT NULL,
 
-  provider ENUM('GOOGLE','FACEBOOK') NOT NULL,
+  provider ENUM('LOCAL','GOOGLE','FACEBOOK') NOT NULL,
   provider_user_id VARCHAR(191) NOT NULL,
   email_at_provider VARCHAR(190) NULL,
 

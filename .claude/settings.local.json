@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Alex\\\\Desktop\\\\SplitUp\\\\SplitUp\\\\core\\\\src\\\\main\\\\java\\\\com\\\\splitup\" -Directory)"
+    ]
+  }
+}

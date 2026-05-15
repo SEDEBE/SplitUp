@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.splitup.desktop.controller.CreateExpenseController"
+      spacing="14" minWidth="460">
+    <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+
+    <Label text="Nuevo gasto" styleClass="section-title"/>
+
+    <GridPane hgap="12" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="110" halignment="RIGHT"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Título:"   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="titleField" promptText="Ej: Cena en restaurante"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Importe €:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="amountField" promptText="0.00"
+                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Fecha:"    GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="datePicker"
+                    GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+        <Label text="Pagador:"  GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="payerCombo" maxWidth="Infinity"
+                  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Modo de reparto -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <Label text="Reparto:"/>
+        <RadioButton fx:id="equalRadio" text="Igual (EQUAL)"/>
+        <RadioButton fx:id="customRadio" text="Personalizado (CUSTOM)"/>
+    </HBox>
+
+    <!-- Tabla de participantes -->
+    <Label text="Participantes:" styleClass="section-title"/>
+    <TableView fx:id="participantsTable" prefHeight="200" editable="true">
+        <columns>
+            <TableColumn fx:id="colCheck"          text="✓"       prefWidth="44" editable="true"/>
+            <TableColumn fx:id="colParticipantName" text="Nombre" prefWidth="200"/>
+            <TableColumn fx:id="colCustomAmount"    text="Importe (€)" prefWidth="130" editable="true"/>
+        </columns>
+    </TableView>
+
+    <!-- Botones -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button text="Cancelar" onAction="#onCancel" styleClass="btn-outline"/>
+        <Button text="Guardar"  onAction="#onSave"   styleClass="btn-primary"/>
+    </HBox>
+</VBox>

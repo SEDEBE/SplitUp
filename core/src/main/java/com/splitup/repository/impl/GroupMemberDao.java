@@ -97,6 +97,27 @@ public class GroupMemberDao extends AbstractDao<GroupMember, GroupMemberId> {
     }
 
     /**
+     * Igual que findByGroup pero con JOIN FETCH sobre user y group para que
+     * los servicios puedan acceder a esas relaciones una vez cerrada la sesión.
+     *
+     * @param group Grupo
+     * @return Lista de GroupMember con user y group ya inicializados
+     */
+    public List<GroupMember> findByGroupFetchingUsers(ExpenseGroup group) {
+        try (Session session = openSession()) {
+            return session.createQuery(
+                    "FROM GroupMember gm JOIN FETCH gm.user JOIN FETCH gm.group " +
+                    "WHERE gm.group = :group ORDER BY gm.joinedAt",
+                    GroupMember.class)
+                    .setParameter("group", group)
+                    .list();
+        } catch (Exception e) {
+            log.error("Error en findByGroupFetchingUsers(groupId={}): {}", group.getId(), e.getMessage(), e);
+            throw new RuntimeException("Error al obtener miembros del grupo con usuarios", e);
+        }
+    }
+
+    /**
      * Cuenta cuántos miembros tiene un grupo.
      *
      * @param group Grupo

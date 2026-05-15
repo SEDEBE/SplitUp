@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SplitUp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">#7B2FBE</item>
+        <item name="colorPrimaryVariant">#5C1A9A</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">#E040FB</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="android:statusBarColor">#5C1A9A</item>
+    </style>
+
+    <color name="purple_700">#7B2FBE</color>
+    <color name="purple_500">#9C4DCC</color>
+</resources>
