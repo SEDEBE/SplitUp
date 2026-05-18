@@ -6,6 +6,7 @@ import com.splitup.model.User;
 import com.splitup.model.enums.GroupRole;
 import com.splitup.model.ids.GroupMemberId;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,33 @@ public class GroupMemberDao extends AbstractDao<GroupMember, GroupMemberId> {
 
     public GroupMemberDao() {
         super(GroupMember.class);
+    }
+
+    /**
+     * Sobrescribe save() porque user y group llegan detached (sesión previa cerrada).
+     * getReference() devuelve un proxy gestionado sin SELECT extra; persist() puede
+     * entonces insertar el GroupMember sin violar la restricción de detached entities.
+     */
+    @Override
+    public void save(GroupMember entity) {
+        Session session = openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            User managedUser          = session.getReference(User.class, entity.getUser().getId());
+            ExpenseGroup managedGroup = session.getReference(ExpenseGroup.class, entity.getGroup().getId());
+            GroupMember managed       = new GroupMember(managedUser, managedGroup, entity.getRole());
+            session.persist(managed);
+            tx.commit();
+            log.debug("save() GroupMember OK: userId={}, groupId={}",
+                    entity.getUser().getId(), entity.getGroup().getId());
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) tx.rollback();
+            log.error("Error en save() de GroupMember: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al guardar miembro", e);
+        } finally {
+            session.close();
+        }
     }
 
     /**

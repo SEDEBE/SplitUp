@@ -112,11 +112,16 @@ public class ExpenseService {
         try {
             tx = session.beginTransaction();
 
+            // group y payer llegan detached; getReference() devuelve un proxy gestionado sin SELECT extra
+            expense.setGroup(session.getReference(ExpenseGroup.class, group.getId()));
+            expense.setPayer(session.getReference(User.class, payer.getId()));
+
             session.persist(expense);
 
             ShareType shareType = (mode == SplitMode.CUSTOM) ? ShareType.CUSTOM : ShareType.EQUAL;
             for (int i = 0; i < participants.size(); i++) {
-                ExpenseShare share = new ExpenseShare(expense, participants.get(i), shareType, amounts.get(i));
+                User managedUser = session.getReference(User.class, participants.get(i).getId());
+                ExpenseShare share = new ExpenseShare(expense, managedUser, shareType, amounts.get(i));
                 session.persist(share);
             }
 
@@ -199,7 +204,8 @@ public class ExpenseService {
 
             ShareType shareType = (mode == SplitMode.CUSTOM) ? ShareType.CUSTOM : ShareType.EQUAL;
             for (int i = 0; i < participants.size(); i++) {
-                ExpenseShare share = new ExpenseShare(managed, participants.get(i), shareType, amounts.get(i));
+                User managedUser = session.getReference(User.class, participants.get(i).getId());
+                ExpenseShare share = new ExpenseShare(managed, managedUser, shareType, amounts.get(i));
                 session.persist(share);
             }
 
