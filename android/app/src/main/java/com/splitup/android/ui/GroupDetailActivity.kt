@@ -46,7 +46,10 @@ class GroupDetailActivity : AppCompatActivity() {
 
         @Suppress("DEPRECATION")
         group = intent.getSerializableExtra("group") as? GroupDto ?: run { finish(); return }
+
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.title = group.name
+        binding.toolbar.setNavigationOnClickListener { finish() }
 
         setupAdapters()
         setupTabs()
@@ -63,7 +66,7 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private fun setupAdapters() {
-        expenseAdapter = ExpenseAdapter()
+        expenseAdapter = ExpenseAdapter { expense -> confirmDeleteExpense(expense) }
         memberAdapter  = MemberAdapter()
         balanceAdapter = BalanceAdapter()
         binding.recyclerContent.layoutManager = LinearLayoutManager(this)
@@ -81,16 +84,76 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     private fun setupMembersActions() {
-        // Copiar código al portapapeles
         binding.btnCopyCode.setOnClickListener {
             val code = group.inviteCode ?: return@setOnClickListener
             val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(ClipData.newPlainText("invite_code", code))
             Toast.makeText(this, "Código copiado", Toast.LENGTH_SHORT).show()
         }
-
-        // Eliminar grupo
+        binding.btnAddMember.setOnClickListener { showAddMemberDialog() }
         binding.btnDeleteGroup.setOnClickListener { confirmDeleteGroup() }
+    }
+
+    private fun showAddMemberDialog() {
+        val input = android.widget.EditText(this).apply {
+            hint = "Email del miembro"
+            inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Añadir miembro")
+            .setView(input)
+            .setPositiveButton("Añadir") { _, _ ->
+                val email = input.text.toString().trim()
+                if (email.isNotBlank()) doAddMember(email)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun doAddMember(email: String) {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.addMember(
+                    group.id,
+                    mapOf("email" to email, "requesterId" to userId)
+                )
+                if (resp.isSuccessful) {
+                    Toast.makeText(this@GroupDetailActivity, "Miembro añadido", Toast.LENGTH_SHORT).show()
+                    loadTab(1)
+                } else {
+                    Toast.makeText(this@GroupDetailActivity, "No se pudo añadir al miembro", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun confirmDeleteExpense(expense: com.splitup.android.model.ExpenseDto) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar gasto")
+            .setMessage("¿Eliminar \"${expense.title}\"?\nEsta acción no se puede deshacer.")
+            .setPositiveButton("Eliminar") { _, _ -> doDeleteExpense(expense) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun doDeleteExpense(expense: com.splitup.android.model.ExpenseDto) {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.deleteExpense(group.id, expense.id, userId)
+                if (resp.isSuccessful) {
+                    Toast.makeText(this@GroupDetailActivity, "Gasto eliminado", Toast.LENGTH_SHORT).show()
+                    loadTab(0)
+                } else {
+                    Toast.makeText(this@GroupDetailActivity, "Sin permiso para eliminar este gasto", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun confirmDeleteGroup() {
@@ -140,7 +203,8 @@ class GroupDetailActivity : AppCompatActivity() {
         // Controles específicos de cada pestaña
         binding.settleSubToggle.visibility = if (position == 3) View.VISIBLE else View.GONE
         val membersVisible = if (position == 1) View.VISIBLE else View.GONE
-        binding.cardInvite.visibility    = membersVisible
+        binding.cardInvite.visibility     = membersVisible
+        binding.btnAddMember.visibility   = membersVisible
         binding.btnDeleteGroup.visibility = membersVisible
         if (position == 1) {
             binding.tvInviteCode.text = group.inviteCode ?: "—"

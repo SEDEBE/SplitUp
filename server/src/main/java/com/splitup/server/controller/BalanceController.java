@@ -23,8 +23,8 @@ public class BalanceController {
 
     /** Devuelve el balance neto de cada miembro del grupo. */
     @GetMapping("/balances")
-    public ResponseEntity<?> getBalances(@PathVariable Long groupId,
-                                         @RequestParam Long userId) {
+    public ResponseEntity<?> getBalances(@PathVariable("groupId") Long groupId,
+                                         @RequestParam("userId") Long userId) {
         ExpenseGroup group = resolveGroup(groupId, userId);
         if (group == null) return ResponseEntity.notFound().build();
 
@@ -38,8 +38,8 @@ public class BalanceController {
      * Este endpoint expone el algoritmo de minimización de BalanceService.
      */
     @GetMapping("/settlements")
-    public ResponseEntity<?> getSettlements(@PathVariable Long groupId,
-                                            @RequestParam Long userId) {
+    public ResponseEntity<?> getSettlements(@PathVariable("groupId") Long groupId,
+                                            @RequestParam("userId") Long userId) {
         ExpenseGroup group = resolveGroup(groupId, userId);
         if (group == null) return ResponseEntity.notFound().build();
 

@@ -20,6 +20,7 @@ class GroupAdapter(private val onClick: (GroupDto) -> Unit) :
         val group = getItem(position)
         holder.binding.tvGroupName.text = group.name
         holder.binding.tvGroupDesc.text = group.description ?: ""
+        holder.binding.tvGroupInitial.text = group.name.firstOrNull()?.uppercaseChar()?.toString() ?: "G"
         holder.itemView.setOnClickListener { onClick(group) }
     }
 

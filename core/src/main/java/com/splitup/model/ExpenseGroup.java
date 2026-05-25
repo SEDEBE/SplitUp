@@ -18,7 +18,7 @@ public class ExpenseGroup {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 

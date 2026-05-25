@@ -28,7 +28,7 @@ public class LoginController {
     @FXML private Label         errorLabel;
 
     private boolean registerMode = false;
-    private final UserService userService = new UserService();
+    private UserService userService;
 
     @FXML
     private void initialize() {
@@ -37,6 +37,16 @@ public class LoginController {
         errorLabel.setText("");
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
+    }
+
+    private UserService getUserService() {
+        if (!com.splitup.utils.HibernateUtil.isAvailable()) {
+            throw new RuntimeException("Base de datos no disponible");
+        }
+        if (userService == null) {
+            userService = new UserService();
+        }
+        return userService;
     }
 
     @FXML
@@ -48,11 +58,19 @@ public class LoginController {
         if (email.isBlank()) { showError("Introduce tu email."); return; }
         if (password.isBlank()) { showError("Introduce tu contraseña."); return; }
 
+        UserService svc;
+        try {
+            svc = getUserService();
+        } catch (RuntimeException ex) {
+            showError("Sin conexión a la base de datos.\nComprueba que MySQL está activo en localhost:3306.");
+            return;
+        }
+
         if (registerMode) {
             String name = nameField.getText().trim();
             if (name.isBlank()) { showError("Introduce tu nombre."); return; }
             try {
-                User user = userService.registerWithPassword(name, email, password);
+                User user = svc.registerWithPassword(name, email, password);
                 navigateToMain(user);
             } catch (BusinessException ex) {
                 showError(ex.getMessage());
@@ -62,7 +80,7 @@ public class LoginController {
             }
         } else {
             try {
-                Optional<User> found = userService.loginWithPassword(email, password);
+                Optional<User> found = svc.loginWithPassword(email, password);
                 if (found.isPresent()) {
                     navigateToMain(found.get());
                 } else {

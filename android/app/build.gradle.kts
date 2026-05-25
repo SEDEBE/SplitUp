@@ -39,9 +39,13 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
     implementation(libs.gson)
+    implementation(libs.okhttp.logging)
 
     // Corrutinas + ViewModel
     implementation(libs.coroutines.android)
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.runtime)
+
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 }

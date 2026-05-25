@@ -17,9 +17,14 @@ class MemberAdapter : ListAdapter<MemberDto, MemberAdapter.VH>(DIFF) {
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val m = getItem(position)
+        holder.binding.tvMemberInitial.text = m.name.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
         holder.binding.tvMemberName.text  = m.name
         holder.binding.tvMemberEmail.text = m.email
-        holder.binding.tvMemberRole.text  = m.role
+        holder.binding.tvMemberRole.text  = when (m.role) {
+            "OWNER" -> "Propietario"
+            "ADMIN" -> "Admin"
+            else    -> "Miembro"
+        }
     }
 
     companion object {

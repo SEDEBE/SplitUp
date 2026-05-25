@@ -1,14 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.SplitUp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">#7B2FBE</item>
-        <item name="colorPrimaryVariant">#5C1A9A</item>
+    <style name="Theme.SplitUp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorSecondary">#E040FB</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorOnSecondary">@android:color/white</item>
-        <item name="android:statusBarColor">#5C1A9A</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+
+        <!-- Toolbar -->
+        <item name="toolbarStyle">@style/SplitUp.Toolbar</item>
+
+        <!-- Tabs -->
+        <item name="tabStyle">@style/SplitUp.TabItem</item>
+
+        <!-- TextInputLayout outline color -->
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorTextGrey</item>
+
+        <!-- MaterialButton -->
+        <item name="materialButtonStyle">@style/SplitUp.Button.Primary</item>
+        <item name="materialButtonOutlinedStyle">@style/SplitUp.Button.Outlined</item>
     </style>
 
-    <color name="purple_700">#7B2FBE</color>
-    <color name="purple_500">#9C4DCC</color>
+    <style name="SplitUp.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="background">@color/colorPrimary</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="subtitleTextColor">#CCFFFFFF</item>
+    </style>
+
+    <style name="SplitUp.TabItem" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorColor">@android:color/white</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
+        <item name="tabTextColor">#BBFFFFFF</item>
+        <item name="tabBackground">@color/colorPrimary</item>
+        <item name="tabIndicatorFullWidth">false</item>
+    </style>
+
+    <style name="SplitUp.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="SplitUp.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="SplitUp.Button.Danger" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorDanger</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="SplitUp.Button.DangerOutlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/colorDanger</item>
+        <item name="android:textColor">@color/colorDanger</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="SplitUp.Button.Success" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorSuccess</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
 </resources>

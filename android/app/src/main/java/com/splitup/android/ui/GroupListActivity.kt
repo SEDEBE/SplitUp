@@ -29,7 +29,9 @@ class GroupListActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java)); finish(); return
         }
 
-        supportActionBar?.title = "Grupos de ${user.name}"
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.tvUserName.text = "Hola, ${user.name}"
 
         adapter = GroupAdapter { group -> openGroup(group) }
         binding.recyclerGroups.layoutManager = LinearLayoutManager(this)
@@ -58,10 +60,10 @@ class GroupListActivity : AppCompatActivity() {
                     binding.tvEmpty.visibility =
                         if (resp.body().isNullOrEmpty()) View.VISIBLE else View.GONE
                 } else {
-                    toast("Error cargando grupos")
+                    toast("Error ${resp.code()}: ${resp.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                toast("Error de conexión")
+                toast("Error: ${e.message}")
             } finally {
                 binding.progressBar.visibility = View.GONE
             }
@@ -89,8 +91,8 @@ class GroupListActivity : AppCompatActivity() {
                 val body = mapOf<String, Any>("name" to name, "description" to "", "creatorId" to userId)
                 val resp = RetrofitClient.api.createGroup(body)
                 if (resp.isSuccessful) loadGroups()
-                else toast("No se pudo crear el grupo")
-            } catch (e: Exception) { toast("Error de conexión") }
+                else toast("Error ${resp.code()}: ${resp.errorBody()?.string()}")
+            } catch (e: Exception) { toast("Error: ${e.message}") }
         }
     }
 
@@ -123,10 +125,21 @@ class GroupListActivity : AppCompatActivity() {
                     toast("Te has unido al grupo")
                     loadGroups()
                 } else {
-                    toast("Código inválido o ya eres miembro")
+                    val errBody = resp.errorBody()?.string() ?: "(vacío)"
+                    showJoinError("Error HTTP ${resp.code()}", errBody)
                 }
-            } catch (e: Exception) { toast("Error de conexión") }
+            } catch (e: Exception) {
+                showJoinError("Error de red / parseo", "${e.javaClass.simpleName}: ${e.message}")
+            }
         }
+    }
+
+    private fun showJoinError(title: String, message: String) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun openGroup(group: GroupDto) {

@@ -30,8 +30,8 @@ public class SettlementController {
      * Solo accesible para miembros del grupo.
      */
     @GetMapping("/confirmed")
-    public ResponseEntity<?> getConfirmed(@PathVariable Long groupId,
-                                          @RequestParam Long userId) {
+    public ResponseEntity<?> getConfirmed(@PathVariable("groupId") Long groupId,
+                                          @RequestParam("userId") Long userId) {
         ExpenseGroup group = resolveGroup(groupId, userId);
         if (group == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
@@ -46,7 +46,7 @@ public class SettlementController {
      * Devuelve 201 con el DTO del registro creado.
      */
     @PostMapping
-    public ResponseEntity<?> confirmSettlement(@PathVariable Long groupId,
+    public ResponseEntity<?> confirmSettlement(@PathVariable("groupId") Long groupId,
                                                @RequestBody Map<String, Object> body) {
         Long requesterId = ((Number) body.get("requesterId")).longValue();
         Long fromUserId  = ((Number) body.get("fromUserId")).longValue();
@@ -79,9 +79,9 @@ public class SettlementController {
      * 404 si el registro no existe.
      */
     @DeleteMapping("/{settlementId}")
-    public ResponseEntity<?> unconfirmSettlement(@PathVariable Long groupId,
-                                                 @PathVariable Long settlementId,
-                                                 @RequestParam Long requesterId) {
+    public ResponseEntity<?> unconfirmSettlement(@PathVariable("groupId") Long groupId,
+                                                 @PathVariable("settlementId") Long settlementId,
+                                                 @RequestParam("requesterId") Long requesterId) {
         ExpenseGroup group = resolveGroup(groupId, requesterId);
         if (group == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 

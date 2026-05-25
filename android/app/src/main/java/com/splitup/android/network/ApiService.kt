@@ -14,13 +14,16 @@ interface ApiService {
     @POST("api/users/register")
     suspend fun register(@Body body: Map<String, String>): Response<UserDto>
 
+    @POST("api/users/google")
+    suspend fun loginWithGoogle(@Body body: Map<String, String>): Response<UserDto>
+
     // ── Grupos ────────────────────────────────────────────────────────────────
 
     @GET("api/groups")
     suspend fun getGroups(@Query("userId") userId: Long): Response<List<GroupDto>>
 
     @POST("api/groups")
-    suspend fun createGroup(@Body body: Map<String, Any>): Response<GroupDto>
+    suspend fun createGroup(@Body body: Map<String, @JvmSuppressWildcards Any>): Response<GroupDto>
 
     @DELETE("api/groups/{groupId}")
     suspend fun deleteGroup(
@@ -29,7 +32,7 @@ interface ApiService {
     ): Response<Unit>
 
     @POST("api/groups/join")
-    suspend fun joinByCode(@Body body: Map<String, Any>): Response<GroupDto>
+    suspend fun joinByCode(@Body body: Map<String, @JvmSuppressWildcards Any>): Response<GroupDto>
 
     @GET("api/groups/{groupId}/members")
     suspend fun getMembers(
@@ -40,7 +43,7 @@ interface ApiService {
     @POST("api/groups/{groupId}/members")
     suspend fun addMember(
         @Path("groupId") groupId: Long,
-        @Body body: Map<String, Any>
+        @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Response<Unit>
 
     // ── Gastos ────────────────────────────────────────────────────────────────
@@ -54,7 +57,7 @@ interface ApiService {
     @POST("api/groups/{groupId}/expenses")
     suspend fun createExpense(
         @Path("groupId") groupId: Long,
-        @Body body: Map<String, Any>
+        @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Response<ExpenseDto>
 
     @DELETE("api/groups/{groupId}/expenses/{expenseId}")

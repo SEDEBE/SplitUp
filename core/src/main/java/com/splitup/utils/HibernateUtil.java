@@ -8,7 +8,8 @@ import java.util.Properties;
 
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
+    private static Throwable initError;
 
     static {
         try {
@@ -34,13 +35,22 @@ public class HibernateUtil {
                     .buildSessionFactory();
 
         } catch (Throwable ex) {
-            System.err.println("Error al crear SessionFactory");
-            ex.printStackTrace();
-            throw new ExceptionInInitializerError(ex);
+            System.err.println("Base de datos no disponible: " + ex.getMessage());
+            initError = ex;
+            sessionFactory = null;
         }
     }
 
+    public static boolean isAvailable() {
+        return sessionFactory != null;
+    }
+
     public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            throw new RuntimeException(
+                "Base de datos no disponible. Comprueba que MySQL está activo en localhost:3306/splitup.",
+                initError);
+        }
         return sessionFactory;
     }
 

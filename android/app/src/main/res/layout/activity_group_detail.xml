@@ -3,44 +3,71 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:elevation="4dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@android:color/white"
+            app:titleTextColor="@android:color/white"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabIndicatorHeight="3dp"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="#BBFFFFFF"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
             android:visibility="gone"/>
 
-        <!-- Tarjeta de código de invitación (solo visible en pestaña Miembros) -->
+        <!-- Tarjeta código invitación (pestaña Miembros) -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardInvite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:visibility="gone"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+            app:cardCornerRadius="10dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/colorPurpleLight">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="12dp"
+                android:padding="14dp"
                 android:gravity="center_vertical">
 
                 <LinearLayout
@@ -53,71 +80,85 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Código de invitación"
-                        android:textSize="12sp"
-                        android:textColor="#888888"/>
+                        android:textSize="11sp"
+                        android:textColor="@color/colorTextGrey"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.05"/>
 
                     <TextView
                         android:id="@+id/tvInviteCode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
-                        android:fontFamily="monospace"/>
+                        android:textColor="@color/colorTextDark"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="2dp"/>
 
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCopyCode"
-                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Copiar"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp"
+                    style="@style/SplitUp.Button.Primary"/>
 
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón eliminar grupo (solo visible en pestaña Miembros) -->
+        <!-- Botón añadir miembro (pestaña Miembros) -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDeleteGroup"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:id="@+id/btnAddMember"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginTop="4dp"
-            android:text="Eliminar grupo"
-            android:textColor="@color/design_default_color_error"
-            android:visibility="gone"/>
+            android:layout_marginTop="6dp"
+            android:text="+ Añadir miembro por email"
+            android:visibility="gone"
+            style="@style/SplitUp.Button.Outlined"/>
 
-        <!-- Sub-toggle para la pestaña Liquidar (oculto en las demás pestañas) -->
+        <!-- Botón eliminar grupo (pestaña Miembros) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="6dp"
+            android:text="Eliminar grupo"
+            android:visibility="gone"
+            style="@style/SplitUp.Button.DangerOutlined"/>
+
+        <!-- Sub-toggle Liquidar -->
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/settleSubToggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:visibility="gone"
             app:singleSelection="true"
             app:selectionRequired="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSubPending"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Pendientes"/>
+                android:text="Pendientes"
+                style="@style/SplitUp.Button.Outlined"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSubHistory"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Historial"/>
+                android:text="Historial"
+                style="@style/SplitUp.Button.Outlined"/>
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -128,6 +169,8 @@
             android:text="Sin datos."
             android:gravity="center"
             android:padding="32dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorTextGrey"
             android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -135,7 +178,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="8dp"/>
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="72dp"
+            android:clipToPadding="false"/>
 
     </LinearLayout>
 
@@ -146,6 +193,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="Nuevo gasto"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@android:color/white"
         app:srcCompat="@android:drawable/ic_input_add"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

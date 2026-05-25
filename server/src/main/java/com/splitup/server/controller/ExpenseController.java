@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,8 +33,8 @@ public class ExpenseController {
 
     /** Lista todos los gastos de un grupo. */
     @GetMapping
-    public ResponseEntity<?> getExpenses(@PathVariable Long groupId,
-                                         @RequestParam Long userId) {
+    public ResponseEntity<?> getExpenses(@PathVariable("groupId") Long groupId,
+                                         @RequestParam("userId") Long userId) {
         ExpenseGroup group = resolveGroup(groupId, userId);
         if (group == null) return ResponseEntity.notFound().build();
 
@@ -46,7 +48,7 @@ public class ExpenseController {
      * Body: { payerId, title, amount, date (YYYY-MM-DD), splitMode, participantIds: [id,...] }
      */
     @PostMapping
-    public ResponseEntity<?> createExpense(@PathVariable Long groupId,
+    public ResponseEntity<?> createExpense(@PathVariable("groupId") Long groupId,
                                            @RequestBody Map<String, Object> body) {
         Long requesterId = ((Number) body.get("requesterId")).longValue();
         Long payerId     = ((Number) body.get("payerId")).longValue();
@@ -68,22 +70,39 @@ public class ExpenseController {
         if (body.containsKey("splitMode"))
             mode = SplitMode.valueOf(body.get("splitMode").toString().toUpperCase());
 
-        @SuppressWarnings("unchecked")
-        List<Integer> participantIds = (List<Integer>) body.getOrDefault("participantIds", List.of());
-        List<User> participants = participantIds.stream()
-                .map(id -> userService.findById(id.longValue()).orElse(null))
-                .filter(u -> u != null)
-                .toList();
+        List<User> participants;
+        Map<User, BigDecimal> customAmounts = null;
 
-        if (participants.isEmpty()) {
-            participants = groupService.getMembersOfGroup(group).stream()
-                    .map(GroupMember::getUser).toList();
+        if (mode == SplitMode.CUSTOM && body.containsKey("shares")) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> sharesList = (List<Map<String, Object>>) body.get("shares");
+            customAmounts = new LinkedHashMap<>();
+            participants  = new ArrayList<>();
+            for (Map<String, Object> share : sharesList) {
+                Long       uid = ((Number) share.get("userId")).longValue();
+                BigDecimal amt = new BigDecimal(share.get("amount").toString());
+                User       u   = userService.findById(uid).orElse(null);
+                if (u != null) { participants.add(u); customAmounts.put(u, amt); }
+            }
+            if (participants.isEmpty())
+                return ResponseEntity.badRequest().body("No se encontraron participantes válidos");
+        } else {
+            @SuppressWarnings("unchecked")
+            List<Number> participantIds = (List<Number>) body.getOrDefault("participantIds", List.of());
+            participants = participantIds.stream()
+                    .map(id -> userService.findById(id.longValue()).orElse(null))
+                    .filter(u -> u != null)
+                    .toList();
+            if (participants.isEmpty()) {
+                participants = groupService.getMembersOfGroup(group).stream()
+                        .map(GroupMember::getUser).toList();
+            }
         }
 
         try {
             Expense expense = expenseService.createExpense(
                     group, payer, title, amount, date,
-                    null, null, null, mode, participants, null);
+                    null, null, null, mode, participants, customAmounts);
             return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseDto.from(expense));
         } catch (BusinessException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
@@ -92,9 +111,9 @@ public class ExpenseController {
 
     /** Elimina un gasto. */
     @DeleteMapping("/{expenseId}")
-    public ResponseEntity<?> deleteExpense(@PathVariable Long groupId,
-                                           @PathVariable Long expenseId,
-                                           @RequestParam Long userId) {
+    public ResponseEntity<?> deleteExpense(@PathVariable("groupId") Long groupId,
+                                           @PathVariable("expenseId") Long expenseId,
+                                           @RequestParam("userId") Long userId) {
         ExpenseGroup group = resolveGroup(groupId, userId);
         if (group == null) return ResponseEntity.notFound().build();
 

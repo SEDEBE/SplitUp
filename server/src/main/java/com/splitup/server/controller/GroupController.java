@@ -25,7 +25,7 @@ public class GroupController {
 
     /** Lista los grupos en los que un usuario es miembro. */
     @GetMapping("/groups")
-    public ResponseEntity<?> getGroups(@RequestParam Long userId) {
+    public ResponseEntity<?> getGroups(@RequestParam("userId") Long userId) {
         return userService.findById(userId)
                 .map(u -> ResponseEntity.ok(
                         groupService.getGroupsByMember(u).stream()
@@ -53,8 +53,8 @@ public class GroupController {
 
     /** Lista los miembros de un grupo. */
     @GetMapping("/groups/{groupId}/members")
-    public ResponseEntity<?> getMembers(@PathVariable Long groupId,
-                                        @RequestParam Long requesterId) {
+    public ResponseEntity<?> getMembers(@PathVariable("groupId") Long groupId,
+                                        @RequestParam("requesterId") Long requesterId) {
         // Usamos el groupId para buscar el grupo via members del requester
         User requester = userService.findById(requesterId).orElse(null);
         if (requester == null) return ResponseEntity.badRequest().body("Usuario no encontrado");
@@ -69,16 +69,24 @@ public class GroupController {
         return ResponseEntity.ok(members);
     }
 
-    /** Añade un miembro al grupo. */
+    /** Añade un miembro al grupo por email o por userId. */
     @PostMapping("/groups/{groupId}/members")
-    public ResponseEntity<?> addMember(@PathVariable Long groupId,
+    public ResponseEntity<?> addMember(@PathVariable("groupId") Long groupId,
                                        @RequestBody Map<String, Object> body) {
         Long requesterId = ((Number) body.get("requesterId")).longValue();
-        Long userId      = ((Number) body.get("userId")).longValue();
 
         User requester = userService.findById(requesterId).orElse(null);
-        User target    = userService.findById(userId).orElse(null);
-        if (requester == null || target == null)
+        if (requester == null) return ResponseEntity.badRequest().body("Solicitante no encontrado");
+
+        User target;
+        if (body.containsKey("email")) {
+            target = userService.findByEmail((String) body.get("email")).orElse(null);
+        } else if (body.containsKey("userId")) {
+            target = userService.findById(((Number) body.get("userId")).longValue()).orElse(null);
+        } else {
+            return ResponseEntity.badRequest().body("Se requiere 'email' o 'userId'");
+        }
+        if (target == null)
             return ResponseEntity.badRequest().body("Usuario no encontrado");
 
         List<ExpenseGroup> groups = groupService.getGroupsByMember(requester).stream()
@@ -98,8 +106,8 @@ public class GroupController {
      * Solo el OWNER puede hacerlo.
      */
     @DeleteMapping("/groups/{groupId}")
-    public ResponseEntity<?> deleteGroup(@PathVariable Long groupId,
-                                         @RequestParam Long requesterId) {
+    public ResponseEntity<?> deleteGroup(@PathVariable("groupId") Long groupId,
+                                         @RequestParam("requesterId") Long requesterId) {
         User requester = userService.findById(requesterId).orElse(null);
         if (requester == null) return ResponseEntity.badRequest().body("Usuario no encontrado");
 

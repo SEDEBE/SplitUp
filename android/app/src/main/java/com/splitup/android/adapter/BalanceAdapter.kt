@@ -18,12 +18,18 @@ class BalanceAdapter : ListAdapter<BalanceDto, BalanceAdapter.VH>(DIFF) {
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val b = getItem(position)
-        holder.binding.tvBalanceUser.text   = b.userName
-        holder.binding.tvBalanceAmount.text = "€ ${"%.2f".format(b.balance)}"
+        holder.binding.tvBalanceUser.text = b.userName
+        val sign = if (b.balance > 0.005) "+" else ""
+        holder.binding.tvBalanceAmount.text = "$sign${"%.2f".format(b.balance)} €"
+        holder.binding.tvBalanceAmount.setTextColor(when {
+            b.balance > 0.005  -> Color.parseColor("#2E7D32")
+            b.balance < -0.005 -> Color.parseColor("#C62828")
+            else               -> Color.GRAY
+        })
         holder.binding.tvBalanceStatus.text = when (b.status) {
-            "ACREEDOR" -> "↑ Acreedor"
-            "DEUDOR"   -> "↓ Deudor"
-            else       -> "✓ Saldado"
+            "ACREEDOR" -> "Acreedor"
+            "DEUDOR"   -> "Deudor"
+            else       -> "Saldado"
         }
         holder.binding.tvBalanceStatus.setTextColor(when (b.status) {
             "ACREEDOR" -> Color.parseColor("#2E7D32")

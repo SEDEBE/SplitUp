@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splitup.android.databinding.ItemExpenseBinding
 import com.splitup.android.model.ExpenseDto
 
-class ExpenseAdapter : ListAdapter<ExpenseDto, ExpenseAdapter.VH>(DIFF) {
+class ExpenseAdapter(
+    private val onDeleteClick: (ExpenseDto) -> Unit = {}
+) : ListAdapter<ExpenseDto, ExpenseAdapter.VH>(DIFF) {
 
     inner class VH(val binding: ItemExpenseBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -21,6 +23,7 @@ class ExpenseAdapter : ListAdapter<ExpenseDto, ExpenseAdapter.VH>(DIFF) {
         holder.binding.tvExpensePayer.text  = "Pagado por: ${e.payerName}"
         holder.binding.tvExpenseAmount.text = "€ ${"%.2f".format(e.totalAmount)}"
         holder.binding.tvExpenseDate.text   = e.expenseDate
+        holder.binding.btnDeleteExpense.setOnClickListener { onDeleteClick(e) }
     }
 
     companion object {

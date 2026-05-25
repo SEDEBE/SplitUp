@@ -6,6 +6,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.splitup.android.R
+import com.splitup.android.adapter.ParticipantAdapter
 import com.splitup.android.databinding.ActivityCreateExpenseBinding
 import com.splitup.android.model.GroupDto
 import com.splitup.android.model.MemberDto
@@ -18,16 +21,21 @@ class CreateExpenseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateExpenseBinding
     private lateinit var group: GroupDto
+    private lateinit var participantAdapter: ParticipantAdapter
     private var members: List<MemberDto> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateExpenseBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.title = "Nuevo gasto"
 
         @Suppress("DEPRECATION")
         group = intent.getSerializableExtra("group") as? GroupDto ?: run { finish(); return }
+
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+
+        binding.recyclerParticipants.layoutManager = LinearLayoutManager(this)
 
         loadMembers()
 
@@ -46,9 +54,17 @@ class CreateExpenseActivity : AppCompatActivity() {
                     this@CreateExpenseActivity,
                     android.R.layout.simple_spinner_dropdown_item,
                     names)
-                // Preseleccionar el usuario actual
                 val idx = members.indexOfFirst { it.userId == userId }
                 if (idx >= 0) binding.spinnerPayer.setSelection(idx)
+
+                participantAdapter = ParticipantAdapter(members)
+                binding.recyclerParticipants.adapter = participantAdapter
+
+                binding.rgSplitMode.setOnCheckedChangeListener { _, checkedId ->
+                    val isCustom = checkedId == R.id.rbCustom
+                    participantAdapter.isCustomMode = isCustom
+                    binding.tvCustomHint.visibility = if (isCustom) View.VISIBLE else View.GONE
+                }
             } catch (e: Exception) {
                 toast("Error cargando miembros")
             }
@@ -59,7 +75,7 @@ class CreateExpenseActivity : AppCompatActivity() {
         val title = binding.etTitle.text.toString().trim()
         val amountStr = binding.etAmount.text.toString().trim()
 
-        if (title.isBlank())    { toast("Introduce el título"); return }
+        if (title.isBlank())     { toast("Introduce el título"); return }
         if (amountStr.isBlank()) { toast("Introduce el importe"); return }
 
         val amount = amountStr.replace(",", ".").toDoubleOrNull()
@@ -70,18 +86,32 @@ class CreateExpenseActivity : AppCompatActivity() {
         val payerId = members[payerIdx].userId
 
         val userId = SessionManager.getUser(this)?.id ?: return
+        val isCustom = binding.rgSplitMode.checkedRadioButtonId == R.id.rbCustom
+
+        val body = mutableMapOf<String, Any>(
+            "requesterId" to userId,
+            "payerId"     to payerId,
+            "title"       to title,
+            "amount"      to amount,
+            "date"        to LocalDate.now().toString(),
+            "splitMode"   to if (isCustom) "CUSTOM" else "EQUAL"
+        )
+
+        if (!::participantAdapter.isInitialized) { toast("Espera a que carguen los miembros"); return }
+
+        if (isCustom) {
+            val shares = participantAdapter.getCustomShares()
+            if (shares.isEmpty()) { toast("Introduce el importe de al menos un participante"); return }
+            body["participantIds"] = shares.map { it["userId"] as Long }
+            body["shares"] = shares
+        } else {
+            val selectedIds = participantAdapter.getSelectedParticipantIds()
+            if (selectedIds.isNotEmpty()) body["participantIds"] = selectedIds
+        }
 
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
-                val body: Map<String, Any> = mapOf(
-                    "requesterId"   to userId,
-                    "payerId"       to payerId,
-                    "title"         to title,
-                    "amount"        to amount,
-                    "date"          to LocalDate.now().toString(),
-                    "splitMode"     to "EQUAL"
-                )
                 val resp = RetrofitClient.api.createExpense(group.id, body)
                 if (resp.isSuccessful) {
                     toast("Gasto guardado")
