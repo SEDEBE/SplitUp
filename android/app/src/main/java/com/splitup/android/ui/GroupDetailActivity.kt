@@ -4,15 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.splitup.android.R
+import com.splitup.android.adapter.BalanceAdapter
+import com.splitup.android.adapter.ConfirmedSettlementAdapter
 import com.splitup.android.adapter.ExpenseAdapter
 import com.splitup.android.adapter.MemberAdapter
-import com.splitup.android.adapter.BalanceAdapter
+import com.splitup.android.adapter.PendingSettlementAdapter
 import com.splitup.android.databinding.ActivityGroupDetailBinding
+import com.splitup.android.model.ConfirmedSettlementDto
+import com.splitup.android.model.ConfirmSettlementRequest
 import com.splitup.android.model.GroupDto
+import com.splitup.android.model.SettlementDto
 import com.splitup.android.network.RetrofitClient
 import com.splitup.android.util.SessionManager
 import kotlinx.coroutines.launch
@@ -26,6 +33,9 @@ class GroupDetailActivity : AppCompatActivity() {
     private lateinit var memberAdapter:  MemberAdapter
     private lateinit var balanceAdapter: BalanceAdapter
 
+    // 0 = Pendientes, 1 = Historial
+    private var settleSubTab = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGroupDetailBinding.inflate(layoutInflater)
@@ -37,6 +47,7 @@ class GroupDetailActivity : AppCompatActivity() {
 
         setupAdapters()
         setupTabs()
+        setupSettleSubToggle()
 
         binding.fabNewExpense.setOnClickListener {
             startActivity(Intent(this, CreateExpenseActivity::class.java).apply {
@@ -51,7 +62,6 @@ class GroupDetailActivity : AppCompatActivity() {
         expenseAdapter = ExpenseAdapter()
         memberAdapter  = MemberAdapter()
         balanceAdapter = BalanceAdapter()
-
         binding.recyclerContent.layoutManager = LinearLayoutManager(this)
     }
 
@@ -66,8 +76,28 @@ class GroupDetailActivity : AppCompatActivity() {
         })
     }
 
+    private fun setupSettleSubToggle() {
+        // Seleccionar "Pendientes" como estado inicial
+        binding.btnSubPending.isChecked = true
+
+        binding.settleSubToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            settleSubTab = when (checkedId) {
+                R.id.btnSubPending -> 0
+                R.id.btnSubHistory -> 1
+                else -> 0
+            }
+            loadTab(3)
+        }
+    }
+
     private fun loadTab(position: Int) {
         val userId = SessionManager.getUser(this)?.id ?: return
+
+        // El toggle solo es visible en la pestaña Liquidar
+        binding.settleSubToggle.visibility =
+            if (position == 3) View.VISIBLE else View.GONE
+
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
@@ -76,27 +106,25 @@ class GroupDetailActivity : AppCompatActivity() {
                         val resp = RetrofitClient.api.getExpenses(group.id, userId)
                         expenseAdapter.submitList(resp.body() ?: emptyList())
                         binding.recyclerContent.adapter = expenseAdapter
+                        binding.tvEmpty.visibility = View.GONE
                     }
                     1 -> {
                         val resp = RetrofitClient.api.getMembers(group.id, userId)
                         memberAdapter.submitList(resp.body() ?: emptyList())
                         binding.recyclerContent.adapter = memberAdapter
+                        binding.tvEmpty.visibility = View.GONE
                     }
                     2 -> {
                         val resp = RetrofitClient.api.getBalances(group.id, userId)
                         balanceAdapter.submitList(resp.body() ?: emptyList())
                         binding.recyclerContent.adapter = balanceAdapter
+                        binding.tvEmpty.visibility = View.GONE
                     }
                     3 -> {
-                        val resp = RetrofitClient.api.getSettlements(group.id, userId)
-                        val items = (resp.body() ?: emptyList()).map { s ->
-                            "${s.fromName}  →  ${s.toName}   € ${"%.2f".format(s.amount)}"
-                        }
-                        showSettlementsInRecycler(items)
+                        loadSettlementsSubTab(userId)
                         return@launch
                     }
                 }
-                binding.tvEmpty.visibility = View.GONE
             } catch (e: Exception) {
                 Toast.makeText(this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
             } finally {
@@ -105,27 +133,109 @@ class GroupDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showSettlementsInRecycler(items: List<String>) {
-        val adapter = object : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
-            override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
-                val tv = android.widget.TextView(parent.context).apply {
-                    setPadding(48, 32, 48, 32)
-                    textSize = 16f
-                    layoutParams = android.view.ViewGroup.LayoutParams(
-                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
-                }
-                return object : androidx.recyclerview.widget.RecyclerView.ViewHolder(tv) {}
-            }
-            override fun getItemCount() = items.size
-            override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
-                (holder.itemView as android.widget.TextView).text = items[position]
-            }
+    private suspend fun loadSettlementsSubTab(userId: Long) {
+        if (settleSubTab == 0) {
+            val list = RetrofitClient.api.getSettlements(group.id, userId).body() ?: emptyList()
+            val adapter = PendingSettlementAdapter { s -> confirmSettlementDialog(s) }
+            adapter.submitList(list)
+            binding.recyclerContent.adapter = adapter
+            binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+            if (list.isEmpty()) binding.tvEmpty.text = "¡Todo saldado! No hay deudas pendientes."
+        } else {
+            val list = RetrofitClient.api.getConfirmedSettlements(group.id, userId).body()
+                ?: emptyList()
+            val adapter = ConfirmedSettlementAdapter { c -> unconfirmSettlementDialog(c) }
+            adapter.submitList(list)
+            binding.recyclerContent.adapter = adapter
+            binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+            if (list.isEmpty()) binding.tvEmpty.text = "Aún no se ha confirmado ningún pago."
         }
-        binding.recyclerContent.adapter = adapter
-        binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
-        if (items.isEmpty()) binding.tvEmpty.text = "¡Todo saldado! No hay deudas pendientes."
     }
 
-    override fun onResume() { super.onResume(); loadTab(binding.tabLayout.selectedTabPosition) }
+    // ── Diálogos de confirmación ──────────────────────────────────────────────
+
+    private fun confirmSettlementDialog(s: SettlementDto) {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar pago")
+            .setMessage(
+                "¿Confirmas que ${s.fromName} ha pagado " +
+                "${"%.2f".format(s.amount)} € a ${s.toName}?"
+            )
+            .setPositiveButton("Confirmar") { _, _ -> doConfirm(s) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun unconfirmSettlementDialog(c: ConfirmedSettlementDto) {
+        AlertDialog.Builder(this)
+            .setTitle("Deshacer pago")
+            .setMessage(
+                "¿Deshacer el pago de ${c.fromName} → ${c.toName} " +
+                "por ${"%.2f".format(c.amount)} €?"
+            )
+            .setPositiveButton("Confirmar") { _, _ -> doUnconfirm(c) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    // ── Llamadas al API ───────────────────────────────────────────────────────
+
+    private fun doConfirm(s: SettlementDto) {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.confirmSettlement(
+                    group.id,
+                    ConfirmSettlementRequest(
+                        fromUserId  = s.fromId,
+                        toUserId    = s.toId,
+                        amount      = s.amount,
+                        requesterId = userId
+                    )
+                )
+                if (resp.isSuccessful) {
+                    Toast.makeText(
+                        this@GroupDetailActivity, "Pago confirmado", Toast.LENGTH_SHORT
+                    ).show()
+                    loadTab(3)
+                } else {
+                    Toast.makeText(
+                        this@GroupDetailActivity, "Error al confirmar pago", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun doUnconfirm(c: ConfirmedSettlementDto) {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.unconfirmSettlement(group.id, c.id, userId)
+                if (resp.isSuccessful) {
+                    Toast.makeText(
+                        this@GroupDetailActivity, "Pago deshecho", Toast.LENGTH_SHORT
+                    ).show()
+                    loadTab(3)
+                } else {
+                    Toast.makeText(
+                        this@GroupDetailActivity, "Error al deshacer pago", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadTab(binding.tabLayout.selectedTabPosition)
+    }
 }

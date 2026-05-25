@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,6 +32,9 @@ import java.util.Optional;
 public class MainController {
 
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
+
+    private static final DateTimeFormatter DT_FMT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     // ── Toolbar ──────────────────────────────────────────────────────────────
     @FXML private Label userLabel;
@@ -53,19 +57,29 @@ public class MainController {
     @FXML private TableColumn<Expense,String> colExpAmount;
 
     // Tab Miembros
-    @FXML private TableView<GroupMember>             membersTable;
-    @FXML private TableColumn<GroupMember,String>    colMemName;
-    @FXML private TableColumn<GroupMember,String>    colMemEmail;
-    @FXML private TableColumn<GroupMember,String>    colMemRole;
+    @FXML private TableView<GroupMember>          membersTable;
+    @FXML private TableColumn<GroupMember,String> colMemName;
+    @FXML private TableColumn<GroupMember,String> colMemEmail;
+    @FXML private TableColumn<GroupMember,String> colMemRole;
 
     // Tab Balances
-    @FXML private TableView<UserBalance>             balancesTable;
-    @FXML private TableColumn<UserBalance,String>    colBalUser;
-    @FXML private TableColumn<UserBalance,String>    colBalAmount;
-    @FXML private TableColumn<UserBalance,String>    colBalStatus;
+    @FXML private TableView<UserBalance>          balancesTable;
+    @FXML private TableColumn<UserBalance,String> colBalUser;
+    @FXML private TableColumn<UserBalance,String> colBalAmount;
+    @FXML private TableColumn<UserBalance,String> colBalStatus;
 
-    // Tab Liquidaciones
-    @FXML private ListView<String> settlementsList;
+    // Tab Liquidar — Pendientes
+    @FXML private TableView<Settlement>          pendingSettlementsTable;
+    @FXML private TableColumn<Settlement,String> colPendFrom;
+    @FXML private TableColumn<Settlement,String> colPendTo;
+    @FXML private TableColumn<Settlement,String> colPendAmount;
+
+    // Tab Liquidar — Historial
+    @FXML private TableView<SettlementRecord>          confirmedSettlementsTable;
+    @FXML private TableColumn<SettlementRecord,String> colConfDate;
+    @FXML private TableColumn<SettlementRecord,String> colConfFrom;
+    @FXML private TableColumn<SettlementRecord,String> colConfTo;
+    @FXML private TableColumn<SettlementRecord,String> colConfAmount;
 
     private final GroupService   groupService   = new GroupService();
     private final ExpenseService expenseService = new ExpenseService();
@@ -75,7 +89,6 @@ public class MainController {
     private void initialize() {
         userLabel.setText("👤 " + SessionContext.getCurrentUser().getName());
 
-        // Cell factory para mostrar nombre del grupo en la lista
         groupsList.setCellFactory(lv -> new ListCell<>() {
             @Override protected void updateItem(ExpenseGroup g, boolean empty) {
                 super.updateItem(g, empty);
@@ -83,7 +96,6 @@ public class MainController {
             }
         });
 
-        // Al seleccionar grupo, cargar el detalle
         groupsList.getSelectionModel().selectedItemProperty().addListener(
                 (obs, old, group) -> {
                     if (group != null) loadGroupDetail(group);
@@ -146,7 +158,7 @@ public class MainController {
             case 0 -> loadExpenses(group);
             case 1 -> loadMembers(group);
             case 2 -> loadBalances(group);
-            case 3 -> loadSettlements(group);
+            case 3 -> { loadPendingSettlements(group); loadConfirmedSettlements(group); }
         }
     }
 
@@ -183,9 +195,11 @@ public class MainController {
                             "/com/splitup/desktop/styles/app.css")).toExternalForm());
             dialog.setScene(scene);
             dialog.showAndWait();
-            loadExpenses(SessionContext.getSelectedGroup());
-            loadBalances(SessionContext.getSelectedGroup());
-            loadSettlements(SessionContext.getSelectedGroup());
+            ExpenseGroup group = SessionContext.getSelectedGroup();
+            loadExpenses(group);
+            loadBalances(group);
+            loadPendingSettlements(group);
+            loadConfirmedSettlements(group);
         } catch (Exception e) {
             log.error("Error abriendo diálogo de gasto", e);
             showError("No se pudo abrir el formulario de gasto.");
@@ -251,21 +265,87 @@ public class MainController {
         }
     }
 
-    // ── Tab: Liquidaciones ───────────────────────────────────────────────────
+    // ── Tab: Liquidaciones — Pendientes ──────────────────────────────────────
 
-    private void loadSettlements(ExpenseGroup group) {
+    private void loadPendingSettlements(ExpenseGroup group) {
         try {
             List<Settlement> settlements = balanceService.getSettlements(group);
-            List<String> items = settlements.stream()
-                    .map(s -> String.format("%s  →  %s   %s %.2f",
-                            s.from().getName(), s.to().getName(),
-                            group.getCreatedBy() != null ? "€" : "€",
-                            s.amount()))
-                    .toList();
-            settlementsList.setItems(FXCollections.observableArrayList(items));
+            pendingSettlementsTable.setItems(FXCollections.observableArrayList(settlements));
         } catch (Exception e) {
-            log.error("Error calculando liquidaciones", e);
+            log.error("Error calculando liquidaciones pendientes", e);
         }
+    }
+
+    @FXML
+    private void onConfirmSettlement() {
+        Settlement selected = pendingSettlementsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Selecciona una transferencia pendiente para confirmar.");
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("¿Confirmas que %s ha pagado %.2f € a %s?",
+                        selected.from().getName(), selected.amount(), selected.to().getName()),
+                ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText(null);
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.YES) {
+                try {
+                    ExpenseGroup group = SessionContext.getSelectedGroup();
+                    balanceService.confirmSettlement(
+                            group,
+                            selected.from(), selected.to(),
+                            selected.amount(),
+                            SessionContext.getCurrentUser());
+                    loadPendingSettlements(group);
+                    loadConfirmedSettlements(group);
+                    loadBalances(group);
+                } catch (BusinessException ex) {
+                    showError(ex.getMessage());
+                }
+            }
+        });
+    }
+
+    // ── Tab: Liquidaciones — Historial ────────────────────────────────────────
+
+    private void loadConfirmedSettlements(ExpenseGroup group) {
+        try {
+            List<SettlementRecord> records = balanceService.getConfirmedSettlements(group);
+            confirmedSettlementsTable.setItems(FXCollections.observableArrayList(records));
+        } catch (Exception e) {
+            log.error("Error cargando liquidaciones confirmadas", e);
+        }
+    }
+
+    @FXML
+    private void onUnconfirmSettlement() {
+        SettlementRecord selected = confirmedSettlementsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Selecciona un pago confirmado para deshacer.");
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("¿Deshacer el pago de %s → %s por %.2f €?",
+                        selected.getFromUser().getName(),
+                        selected.getToUser().getName(),
+                        selected.getAmount()),
+                ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText(null);
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.YES) {
+                try {
+                    ExpenseGroup group = SessionContext.getSelectedGroup();
+                    balanceService.unconfirmSettlement(
+                            selected.getId(), SessionContext.getCurrentUser());
+                    loadPendingSettlements(group);
+                    loadConfirmedSettlements(group);
+                    loadBalances(group);
+                } catch (BusinessException ex) {
+                    showError(ex.getMessage());
+                }
+            }
+        });
     }
 
     // ── Logout ───────────────────────────────────────────────────────────────
@@ -312,6 +392,25 @@ public class MainController {
             String status = sign > 0 ? "Acreedor ↑" : sign < 0 ? "Deudor ↓" : "Saldado ✓";
             return new SimpleStringProperty(status);
         });
+
+        // Liquidar — Pendientes
+        colPendFrom.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().from().getName()));
+        colPendTo.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().to().getName()));
+        colPendAmount.setCellValueFactory(c ->
+                new SimpleStringProperty(String.format("€ %.2f", c.getValue().amount())));
+
+        // Liquidar — Historial
+        colConfDate.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getSettledAt() != null
+                        ? DT_FMT.format(c.getValue().getSettledAt()) : ""));
+        colConfFrom.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getFromUser().getName()));
+        colConfTo.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getToUser().getName()));
+        colConfAmount.setCellValueFactory(c ->
+                new SimpleStringProperty(String.format("€ %.2f", c.getValue().getAmount())));
     }
 
     private void showError(String msg) {

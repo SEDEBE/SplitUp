@@ -50,3 +50,20 @@ data class SettlementDto(
     val toName: String,
     val amount: Double
 ) : Serializable
+
+data class ConfirmedSettlementDto(
+    val id: Long,
+    val fromUserId: Long,
+    val fromName: String,
+    val toUserId: Long,
+    val toName: String,
+    val amount: Double,
+    val settledAt: String
+) : Serializable
+
+data class ConfirmSettlementRequest(
+    val fromUserId: Long,
+    val toUserId: Long,
+    val amount: Double,
+    val requesterId: Long
+) : Serializable

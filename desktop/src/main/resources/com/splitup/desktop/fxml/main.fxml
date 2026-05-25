@@ -106,15 +106,48 @@
 
                     <!-- Tab Liquidar -->
                     <Tab text="Liquidar">
-                        <VBox spacing="8">
-                            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
-                            <Label text="Transferencias mínimas para saldar todas las deudas:"
-                                   styleClass="section-title"/>
-                            <ListView fx:id="settlementsList" VBox.vgrow="ALWAYS"
-                                      styleClass="settlements-list">
-                                <placeholder><Label text="No hay deudas pendientes. ¡Todo saldado!"/></placeholder>
-                            </ListView>
-                        </VBox>
+                        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+                            <!-- Sub-tab: transferencias sugeridas pendientes -->
+                            <Tab text="Pendientes">
+                                <VBox spacing="8">
+                                    <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                                    <TableView fx:id="pendingSettlementsTable" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="colPendFrom"   text="De"      prefWidth="180"/>
+                                            <TableColumn fx:id="colPendTo"     text="A"       prefWidth="180"/>
+                                            <TableColumn fx:id="colPendAmount" text="Importe" prefWidth="110"/>
+                                        </columns>
+                                        <placeholder><Label text="¡Todo saldado! No hay deudas pendientes."/></placeholder>
+                                    </TableView>
+                                    <HBox alignment="CENTER_RIGHT">
+                                        <Button text="✓ Marcar como pagado" onAction="#onConfirmSettlement"
+                                                styleClass="btn-primary"/>
+                                    </HBox>
+                                </VBox>
+                            </Tab>
+
+                            <!-- Sub-tab: pagos ya confirmados -->
+                            <Tab text="Historial">
+                                <VBox spacing="8">
+                                    <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                                    <TableView fx:id="confirmedSettlementsTable" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="colConfDate"   text="Fecha"   prefWidth="140"/>
+                                            <TableColumn fx:id="colConfFrom"   text="De"      prefWidth="160"/>
+                                            <TableColumn fx:id="colConfTo"     text="A"       prefWidth="160"/>
+                                            <TableColumn fx:id="colConfAmount" text="Importe" prefWidth="110"/>
+                                        </columns>
+                                        <placeholder><Label text="Aún no se ha confirmado ningún pago."/></placeholder>
+                                    </TableView>
+                                    <HBox alignment="CENTER_RIGHT">
+                                        <Button text="Deshacer pago" onAction="#onUnconfirmSettlement"
+                                                styleClass="btn-danger"/>
+                                    </HBox>
+                                </VBox>
+                            </Tab>
+
+                        </TabPane>
                     </Tab>
 
                 </TabPane>

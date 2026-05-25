@@ -30,6 +30,7 @@ public class HibernateUtil {
                     .addAnnotatedClass(com.splitup.model.Expense.class)
                     .addAnnotatedClass(com.splitup.model.ExpenseShare.class)
                     .addAnnotatedClass(com.splitup.model.Attachment.class)
+                    .addAnnotatedClass(com.splitup.model.SettlementRecord.class)
                     .buildSessionFactory();
 
         } catch (Throwable ex) {

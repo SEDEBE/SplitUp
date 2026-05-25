@@ -13,6 +13,7 @@ C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\Expen
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\GroupMember.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\ids\ExpenseShareId.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\ids\GroupMemberId.java
+C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\SettlementRecord.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\model\User.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\GenericDao.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\AbstractDao.java
@@ -22,6 +23,7 @@ C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\ExpenseGroupDao.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\ExpenseShareDao.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\GroupMemberDao.java
+C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\SettlementRecordDao.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\repository\impl\UserDao.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\service\BalanceService.java
 C:\Users\Alex\Desktop\SplitUp\SplitUp\core\src\main\java\com\splitup\service\BusinessException.java

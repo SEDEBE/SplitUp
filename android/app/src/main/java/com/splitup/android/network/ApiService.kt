@@ -68,4 +68,23 @@ interface ApiService {
         @Path("groupId") groupId: Long,
         @Query("userId") userId: Long
     ): Response<List<SettlementDto>>
+
+    @GET("api/groups/{groupId}/settlements/confirmed")
+    suspend fun getConfirmedSettlements(
+        @Path("groupId") groupId: Long,
+        @Query("userId") userId: Long
+    ): Response<List<ConfirmedSettlementDto>>
+
+    @POST("api/groups/{groupId}/settlements")
+    suspend fun confirmSettlement(
+        @Path("groupId") groupId: Long,
+        @Body body: ConfirmSettlementRequest
+    ): Response<ConfirmedSettlementDto>
+
+    @DELETE("api/groups/{groupId}/settlements/{settlementId}")
+    suspend fun unconfirmSettlement(
+        @Path("groupId") groupId: Long,
+        @Path("settlementId") settlementId: Long,
+        @Query("requesterId") requesterId: Long
+    ): Response<Unit>
 }
