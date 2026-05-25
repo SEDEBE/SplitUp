@@ -13,7 +13,8 @@ data class GroupDto(
     val id: Long,
     val name: String,
     val description: String?,
-    val createdById: Long
+    val createdById: Long,
+    val inviteCode: String? = null
 ) : Serializable
 
 data class MemberDto(

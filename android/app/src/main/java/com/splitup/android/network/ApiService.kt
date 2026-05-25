@@ -22,6 +22,15 @@ interface ApiService {
     @POST("api/groups")
     suspend fun createGroup(@Body body: Map<String, Any>): Response<GroupDto>
 
+    @DELETE("api/groups/{groupId}")
+    suspend fun deleteGroup(
+        @Path("groupId") groupId: Long,
+        @Query("requesterId") requesterId: Long
+    ): Response<Unit>
+
+    @POST("api/groups/join")
+    suspend fun joinByCode(@Body body: Map<String, Any>): Response<GroupDto>
+
     @GET("api/groups/{groupId}/members")
     suspend fun getMembers(
         @Path("groupId") groupId: Long,

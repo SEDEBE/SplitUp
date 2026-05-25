@@ -85,6 +85,20 @@
     -fx-background-color: rgba(255,255,255,0.15);
 }
 
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #7B2FBE;
+    -fx-border-color: #7B2FBE;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 18 7 18;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover {
+    -fx-background-color: rgba(123,47,190,0.1);
+}
+
 .btn-danger {
     -fx-background-color: #E53935;
     -fx-text-fill: white;

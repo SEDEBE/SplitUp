@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DAO para la entidad ExpenseGroup (tabla expense_groups).
@@ -76,6 +77,25 @@ public class ExpenseGroupDao extends AbstractDao<ExpenseGroup, Long> {
         } catch (Exception e) {
             log.error("Error en findByNameContaining({}): {}", namePart, e.getMessage(), e);
             throw new RuntimeException("Error al buscar grupos por nombre", e);
+        }
+    }
+
+    /**
+     * Busca un grupo por su código de invitación (UUID).
+     *
+     * @param code Código de invitación
+     * @return Optional con el grupo, o vacío si el código no existe
+     */
+    public Optional<ExpenseGroup> findByInviteCode(String code) {
+        try (Session session = openSession()) {
+            return session.createQuery(
+                    "FROM ExpenseGroup g WHERE g.inviteCode = :code",
+                    ExpenseGroup.class)
+                    .setParameter("code", code)
+                    .uniqueResultOptional();
+        } catch (Exception e) {
+            log.error("Error en findByInviteCode({}): {}", code, e.getMessage(), e);
+            throw new RuntimeException("Error al buscar grupo por código de invitación", e);
         }
     }
 }

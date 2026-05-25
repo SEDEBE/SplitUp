@@ -28,6 +28,9 @@ public class ExpenseGroup {
     @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "invite_code", length = 36, unique = true)
+    private String inviteCode;
+
     public ExpenseGroup() {
     }
 
@@ -71,5 +74,13 @@ public class ExpenseGroup {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 }

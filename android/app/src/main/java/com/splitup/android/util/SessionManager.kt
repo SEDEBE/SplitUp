@@ -19,7 +19,7 @@ object SessionManager {
         val prefs = ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE)
         val id = prefs.getLong("userId", -1L)
         if (id == -1L) return null
-        return UserDto(id, prefs.getString("userName", "")!!, prefs.getString("userEmail", "")!!, null)
+        return UserDto(id, prefs.getString("userName", "") ?: "", prefs.getString("userEmail", "") ?: "", null)
     }
 
     fun clear(ctx: Context) {

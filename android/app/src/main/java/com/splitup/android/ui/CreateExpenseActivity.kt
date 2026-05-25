@@ -27,7 +27,7 @@ class CreateExpenseActivity : AppCompatActivity() {
         supportActionBar?.title = "Nuevo gasto"
 
         @Suppress("DEPRECATION")
-        group = intent.getSerializableExtra("group") as GroupDto
+        group = intent.getSerializableExtra("group") as? GroupDto ?: run { finish(); return }
 
         loadMembers()
 

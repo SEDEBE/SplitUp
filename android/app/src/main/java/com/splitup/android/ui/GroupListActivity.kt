@@ -36,6 +36,7 @@ class GroupListActivity : AppCompatActivity() {
         binding.recyclerGroups.adapter = adapter
 
         binding.fabNewGroup.setOnClickListener { showCreateGroupDialog() }
+        binding.fabJoinGroup.setOnClickListener { showJoinGroupDialog() }
 
         binding.btnLogout.setOnClickListener {
             SessionManager.clear(this)
@@ -89,6 +90,41 @@ class GroupListActivity : AppCompatActivity() {
                 val resp = RetrofitClient.api.createGroup(body)
                 if (resp.isSuccessful) loadGroups()
                 else toast("No se pudo crear el grupo")
+            } catch (e: Exception) { toast("Error de conexión") }
+        }
+    }
+
+    private fun showJoinGroupDialog() {
+        val input = android.widget.EditText(this).apply {
+            hint = "Código de invitación"
+            inputType = android.text.InputType.TYPE_CLASS_TEXT
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Unirse a un grupo")
+            .setMessage("Introduce el código de invitación que te compartieron:")
+            .setView(input)
+            .setPositiveButton("Unirse") { _, _ ->
+                val code = input.text.toString().trim()
+                if (code.isBlank()) { toast("Introduce un código"); return@setPositiveButton }
+                joinGroup(code)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun joinGroup(inviteCode: String) {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.joinByCode(
+                    mapOf("inviteCode" to inviteCode, "userId" to userId)
+                )
+                if (resp.isSuccessful) {
+                    toast("Te has unido al grupo")
+                    loadGroups()
+                } else {
+                    toast("Código inválido o ya eres miembro")
+                }
             } catch (e: Exception) { toast("Error de conexión") }
         }
     }

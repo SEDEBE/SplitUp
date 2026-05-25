@@ -92,4 +92,51 @@ public class GroupController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
+    /**
+     * Elimina un grupo y todo su contenido.
+     * Solo el OWNER puede hacerlo.
+     */
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<?> deleteGroup(@PathVariable Long groupId,
+                                         @RequestParam Long requesterId) {
+        User requester = userService.findById(requesterId).orElse(null);
+        if (requester == null) return ResponseEntity.badRequest().body("Usuario no encontrado");
+
+        List<ExpenseGroup> groups = groupService.getGroupsByMember(requester).stream()
+                .filter(g -> g.getId().equals(groupId)).toList();
+        if (groups.isEmpty()) return ResponseEntity.notFound().build();
+
+        try {
+            groupService.deleteGroup(groups.get(0), requester);
+            return ResponseEntity.noContent().build();
+        } catch (BusinessException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        }
+    }
+
+    /**
+     * Une a un usuario a un grupo mediante su código de invitación.
+     * Body: { inviteCode, userId }
+     */
+    @PostMapping("/groups/join")
+    public ResponseEntity<?> joinByCode(@RequestBody Map<String, Object> body) {
+        String inviteCode = (String) body.get("inviteCode");
+        Long   userId     = ((Number) body.get("userId")).longValue();
+
+        User user = userService.findById(userId).orElse(null);
+        if (user == null) return ResponseEntity.badRequest().body("Usuario no encontrado");
+
+        try {
+            groupService.joinByInviteCode(inviteCode, user);
+            // Devolver el grupo al que se unió para que el cliente lo muestre
+            ExpenseGroup group = groupService.getGroupsByMember(user).stream()
+                    .filter(g -> inviteCode.equals(g.getInviteCode()))
+                    .findFirst().orElse(null);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(group != null ? GroupDto.from(group) : null);
+        } catch (BusinessException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
 }

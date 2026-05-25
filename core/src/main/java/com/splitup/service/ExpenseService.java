@@ -126,6 +126,10 @@ public class ExpenseService {
             }
 
             tx.commit();
+            // Restore the original (non-proxy) references so callers can access
+            // payer.getName() and group.getName() without an open session.
+            expense.setPayer(payer);
+            expense.setGroup(group);
             log.info("Gasto creado: id={}, groupId={}, total={}", expense.getId(), group.getId(), totalAmount);
             return expense;
 

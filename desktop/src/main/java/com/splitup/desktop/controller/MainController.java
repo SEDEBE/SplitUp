@@ -13,6 +13,8 @@ import com.splitup.service.dto.UserBalance;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -68,6 +70,9 @@ public class MainController {
     @FXML private TableColumn<UserBalance,String> colBalAmount;
     @FXML private TableColumn<UserBalance,String> colBalStatus;
 
+    // Código de invitación (tab Miembros)
+    @FXML private TextField inviteCodeField;
+
     // Tab Liquidar — Pendientes
     @FXML private TableView<Settlement>          pendingSettlementsTable;
     @FXML private TableColumn<Settlement,String> colPendFrom;
@@ -101,6 +106,9 @@ public class MainController {
                     if (group != null) loadGroupDetail(group);
                 });
 
+        tabPane.getSelectionModel().selectedIndexProperty().addListener(
+                (obs, old, idx) -> refreshCurrentTab(idx.intValue()));
+
         configureTableColumns();
         loadGroups();
         showWelcome();
@@ -123,10 +131,25 @@ public class MainController {
         dlg.setTitle("Nuevo grupo");
         dlg.setHeaderText(null);
         dlg.setContentText("Nombre del grupo:");
-        Optional<String> result = dlg.showAndWait();
-        result.ifPresent(name -> {
+        dlg.showAndWait().ifPresent(name -> {
             try {
                 groupService.createGroup(name, null, SessionContext.getCurrentUser());
+                loadGroups();
+            } catch (BusinessException ex) {
+                showError(ex.getMessage());
+            }
+        });
+    }
+
+    @FXML
+    private void onJoinGroup() {
+        TextInputDialog dlg = new TextInputDialog();
+        dlg.setTitle("Unirse a grupo");
+        dlg.setHeaderText(null);
+        dlg.setContentText("Código de invitación:");
+        dlg.showAndWait().ifPresent(code -> {
+            try {
+                groupService.joinByInviteCode(code.trim(), SessionContext.getCurrentUser());
                 loadGroups();
             } catch (BusinessException ex) {
                 showError(ex.getMessage());
@@ -146,9 +169,6 @@ public class MainController {
 
         int selectedTab = tabPane.getSelectionModel().getSelectedIndex();
         refreshCurrentTab(selectedTab >= 0 ? selectedTab : 0);
-
-        tabPane.getSelectionModel().selectedIndexProperty().addListener(
-                (obs, old, idx) -> refreshCurrentTab(idx.intValue()));
     }
 
     private void refreshCurrentTab(int tabIndex) {
@@ -223,15 +243,60 @@ public class MainController {
         });
     }
 
+    // ── Eliminar grupo ───────────────────────────────────────────────────────
+
+    @FXML
+    private void onDeleteGroup() {
+        ExpenseGroup group = SessionContext.getSelectedGroup();
+        if (group == null) return;
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Eliminar el grupo \"" + group.getName() + "\" y todos sus datos?\n" +
+                "Esta acción no se puede deshacer.",
+                ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText(null);
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.YES) {
+                try {
+                    groupService.deleteGroup(group, SessionContext.getCurrentUser());
+                    SessionContext.setSelectedGroup(null);
+                    showWelcome();
+                    loadGroups();
+                } catch (BusinessException ex) {
+                    showError(ex.getMessage());
+                }
+            }
+        });
+    }
+
     // ── Tab: Miembros ────────────────────────────────────────────────────────
 
     private void loadMembers(ExpenseGroup group) {
         try {
             List<GroupMember> members = groupService.getMembersOfGroup(group);
             membersTable.setItems(FXCollections.observableArrayList(members));
+            // Mostrar el código de invitación (puede ser null en grupos creados antes de V3)
+            String code = group.getInviteCode();
+            inviteCodeField.setText(code != null ? code : "");
         } catch (Exception e) {
             log.error("Error cargando miembros", e);
         }
+    }
+
+    @FXML
+    private void onCopyInviteCode() {
+        String code = inviteCodeField.getText();
+        if (code == null || code.isBlank()) {
+            showError("Este grupo no tiene código de invitación todavía.");
+            return;
+        }
+        ClipboardContent content = new ClipboardContent();
+        content.putString(code);
+        Clipboard.getSystemClipboard().setContent(content);
+        // Confirmación visual breve: cambiar temporalmente el texto del campo
+        Alert info = new Alert(Alert.AlertType.INFORMATION,
+                "Código copiado al portapapeles:\n" + code, ButtonType.OK);
+        info.setHeaderText(null);
+        info.showAndWait();
     }
 
     @FXML

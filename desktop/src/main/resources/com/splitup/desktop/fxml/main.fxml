@@ -26,6 +26,8 @@
             <ListView fx:id="groupsList" VBox.vgrow="ALWAYS" styleClass="groups-list"/>
             <Button text="+ Nuevo grupo" onAction="#onNewGroup"
                     styleClass="btn-primary" maxWidth="Infinity"/>
+            <Button text="Unirse con código" onAction="#onJoinGroup"
+                    styleClass="btn-outline" maxWidth="Infinity"/>
         </VBox>
     </left>
 
@@ -46,6 +48,8 @@
                 <HBox styleClass="group-header" alignment="CENTER_LEFT" spacing="12">
                     <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
                     <Label fx:id="groupNameLabel" styleClass="group-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Eliminar grupo" onAction="#onDeleteGroup" styleClass="btn-danger"/>
                 </HBox>
 
                 <!-- Tabs -->
@@ -75,8 +79,13 @@
                     <Tab text="Miembros">
                         <VBox spacing="8">
                             <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
-                            <HBox alignment="CENTER_RIGHT">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
                                 <Button text="+ Añadir miembro" onAction="#onAddMember" styleClass="btn-primary"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="Código de invitación:" styleClass="form-label"/>
+                                <TextField fx:id="inviteCodeField" editable="false" prefWidth="280"
+                                           promptText="(sin código)"/>
+                                <Button text="Copiar" onAction="#onCopyInviteCode" styleClass="btn-secondary"/>
                             </HBox>
                             <TableView fx:id="membersTable" VBox.vgrow="ALWAYS">
                                 <columns>

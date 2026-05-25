@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Servicio de dominio para la gestión de grupos y su membresía.
@@ -72,6 +73,7 @@ public class GroupService {
             User managedCreator = session.merge(creator);
 
             ExpenseGroup group = new ExpenseGroup(name.trim(), description, managedCreator);
+            group.setInviteCode(UUID.randomUUID().toString());
             session.persist(group); // IDENTITY → id asignado inmediatamente tras el INSERT
 
             GroupMember owner = new GroupMember(managedCreator, group, GroupRole.OWNER);
@@ -88,6 +90,50 @@ public class GroupService {
         } finally {
             session.close();
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // Eliminación de grupo
+    // -----------------------------------------------------------------------
+
+    /**
+     * Elimina el grupo y todo su contenido (CASCADE en BD: gastos, shares,
+     * miembros, liquidaciones). Solo el OWNER puede ejecutar esta operación.
+     *
+     * @param group     Grupo a eliminar
+     * @param requester Usuario que solicita la eliminación
+     */
+    public void deleteGroup(ExpenseGroup group, User requester) throws BusinessException {
+        GroupMember member = memberDao.findByUserAndGroup(requester, group)
+                .orElseThrow(() -> new BusinessException("El usuario no es miembro del grupo"));
+        if (member.getRole() != GroupRole.OWNER)
+            throw new BusinessException("Solo el OWNER puede eliminar el grupo");
+        groupDao.delete(group);
+        log.info("Grupo eliminado: groupId={}, por userId={}", group.getId(), requester.getId());
+    }
+
+    // -----------------------------------------------------------------------
+    // Invitación por código
+    // -----------------------------------------------------------------------
+
+    /**
+     * Une a {@code user} al grupo asociado a {@code inviteCode} con rol MEMBER.
+     *
+     * @param inviteCode Código UUID del grupo
+     * @param user       Usuario que se une
+     * @return GroupMember creado
+     */
+    public GroupMember joinByInviteCode(String inviteCode, User user) throws BusinessException {
+        if (inviteCode == null || inviteCode.isBlank())
+            throw new BusinessException("El código de invitación no puede estar vacío");
+        ExpenseGroup group = groupDao.findByInviteCode(inviteCode.trim())
+                .orElseThrow(() -> new BusinessException("Código de invitación inválido"));
+        if (memberDao.isMember(user, group))
+            throw new BusinessException("Ya eres miembro de este grupo");
+        GroupMember gm = new GroupMember(user, group, GroupRole.MEMBER);
+        memberDao.save(gm);
+        log.info("Usuario userId={} se unió a groupId={} con código", user.getId(), group.getId());
+        return gm;
     }
 
     // -----------------------------------------------------------------------

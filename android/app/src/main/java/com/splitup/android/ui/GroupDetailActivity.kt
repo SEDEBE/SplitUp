@@ -1,5 +1,8 @@
 package com.splitup.android.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -42,12 +45,13 @@ class GroupDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         @Suppress("DEPRECATION")
-        group = intent.getSerializableExtra("group") as GroupDto
+        group = intent.getSerializableExtra("group") as? GroupDto ?: run { finish(); return }
         supportActionBar?.title = group.name
 
         setupAdapters()
         setupTabs()
         setupSettleSubToggle()
+        setupMembersActions()
 
         binding.fabNewExpense.setOnClickListener {
             startActivity(Intent(this, CreateExpenseActivity::class.java).apply {
@@ -76,6 +80,45 @@ class GroupDetailActivity : AppCompatActivity() {
         })
     }
 
+    private fun setupMembersActions() {
+        // Copiar código al portapapeles
+        binding.btnCopyCode.setOnClickListener {
+            val code = group.inviteCode ?: return@setOnClickListener
+            val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            cm.setPrimaryClip(ClipData.newPlainText("invite_code", code))
+            Toast.makeText(this, "Código copiado", Toast.LENGTH_SHORT).show()
+        }
+
+        // Eliminar grupo
+        binding.btnDeleteGroup.setOnClickListener { confirmDeleteGroup() }
+    }
+
+    private fun confirmDeleteGroup() {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar grupo")
+            .setMessage("¿Eliminar \"${group.name}\" y todos sus datos?\nEsta acción no se puede deshacer.")
+            .setPositiveButton("Eliminar") { _, _ -> doDeleteGroup() }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun doDeleteGroup() {
+        val userId = SessionManager.getUser(this)?.id ?: return
+        lifecycleScope.launch {
+            try {
+                val resp = RetrofitClient.api.deleteGroup(group.id, userId)
+                if (resp.isSuccessful) {
+                    Toast.makeText(this@GroupDetailActivity, "Grupo eliminado", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@GroupDetailActivity, "No tienes permiso para eliminar este grupo", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@GroupDetailActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun setupSettleSubToggle() {
         // Seleccionar "Pendientes" como estado inicial
         binding.btnSubPending.isChecked = true
@@ -94,9 +137,14 @@ class GroupDetailActivity : AppCompatActivity() {
     private fun loadTab(position: Int) {
         val userId = SessionManager.getUser(this)?.id ?: return
 
-        // El toggle solo es visible en la pestaña Liquidar
-        binding.settleSubToggle.visibility =
-            if (position == 3) View.VISIBLE else View.GONE
+        // Controles específicos de cada pestaña
+        binding.settleSubToggle.visibility = if (position == 3) View.VISIBLE else View.GONE
+        val membersVisible = if (position == 1) View.VISIBLE else View.GONE
+        binding.cardInvite.visibility    = membersVisible
+        binding.btnDeleteGroup.visibility = membersVisible
+        if (position == 1) {
+            binding.tvInviteCode.text = group.inviteCode ?: "—"
+        }
 
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {

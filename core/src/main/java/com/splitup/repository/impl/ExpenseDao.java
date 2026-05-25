@@ -32,7 +32,7 @@ public class ExpenseDao extends AbstractDao<Expense, Long> {
     public List<Expense> findByGroup(ExpenseGroup group) {
         try (Session session = openSession()) {
             return session.createQuery(
-                    "FROM Expense e WHERE e.group = :group ORDER BY e.expenseDate DESC, e.createdAt DESC",
+                    "FROM Expense e JOIN FETCH e.payer WHERE e.group = :group ORDER BY e.expenseDate DESC, e.createdAt DESC",
                     Expense.class)
                     .setParameter("group", group)
                     .list();
