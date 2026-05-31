@@ -59,7 +59,13 @@
       "Bash(curl -s \"http://localhost:8080/api/groups/3/balances?userId=1\")",
       "Bash(curl -s \"http://localhost:8080/api/groups/3/settlements?userId=1\")",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(Test-Path \"c:\\\\Users\\\\Alex\\\\Desktop\\\\SplitUp\\\\SplitUp\\\\server\\\\target\\\\splitup-server-1.0-SNAPSHOT.jar\")",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"java -jar 'c:\\\\Users\\\\Alex\\\\Desktop\\\\SplitUp\\\\SplitUp\\\\server\\\\target\\\\splitup-server-1.0-SNAPSHOT.jar'\" -WindowStyle Normal)",
+      "PowerShell(Get-Process java -ErrorAction SilentlyContinue)",
+      "PowerShell(adb devices)",
+      "Bash(grep -E \"\\\\.\\(kt|xml\\)$\")",
+      "Bash(xargs grep -l \"dialog\\\\|Dialog\\\\|BottomSheet\\\\|bottom_sheet\")"
     ]
   }
 }

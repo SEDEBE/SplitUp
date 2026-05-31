@@ -29,7 +29,8 @@ class ParticipantAdapter(private val members: List<MemberDto>) :
         holder.binding.cbParticipant.text = member.name
         holder.binding.cbParticipant.isChecked = checked[position]
         holder.binding.cbParticipant.setOnCheckedChangeListener { _, isChecked ->
-            checked[holder.adapterPosition] = isChecked
+            val pos = holder.adapterPosition
+            if (pos != RecyclerView.NO_POSITION) checked[pos] = isChecked
         }
         holder.binding.tilCustomAmount.visibility = if (isCustomMode) View.VISIBLE else View.GONE
         if (isCustomMode) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -22,14 +23,18 @@
         android:id="@+id/tilCustomAmount"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:hint="€ importe"
+        android:hint="Importe (€)"
         android:visibility="gone"
+        android:textColorHint="@color/colorTextGrey"
+        app:hintTextColor="@color/colorPrimary"
+        app:boxStrokeColor="@color/colorPrimary"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCustomAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorTextDark"
             android:inputType="numberDecimal"/>
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -56,11 +56,15 @@
                         android:layout_height="wrap_content"
                         android:hint="Título del gasto"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:textColorHint="@color/colorTextGrey"
+                        app:hintTextColor="@color/colorPrimary"
+                        app:boxStrokeColor="@color/colorPrimary"
                         android:layout_marginBottom="14dp">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/colorTextDark"
                             android:inputType="textCapSentences"
                             android:imeOptions="actionNext"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -70,11 +74,15 @@
                         android:layout_height="wrap_content"
                         android:hint="Importe (€)"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:textColorHint="@color/colorTextGrey"
+                        app:hintTextColor="@color/colorPrimary"
+                        app:boxStrokeColor="@color/colorPrimary"
                         android:layout_marginBottom="14dp">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etAmount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/colorTextDark"
                             android:inputType="numberDecimal"
                             android:imeOptions="actionNext"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +100,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/spinner_background"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="36dp"
                         android:layout_marginBottom="16dp"/>
 
                 </LinearLayout>

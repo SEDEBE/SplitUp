@@ -52,8 +52,8 @@ class CreateExpenseActivity : AppCompatActivity() {
                 val names = members.map { it.name }
                 binding.spinnerPayer.adapter = ArrayAdapter(
                     this@CreateExpenseActivity,
-                    android.R.layout.simple_spinner_dropdown_item,
-                    names)
+                    android.R.layout.simple_spinner_item,
+                    names).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
                 val idx = members.indexOfFirst { it.userId == userId }
                 if (idx >= 0) binding.spinnerPayer.setSelection(idx)
 
